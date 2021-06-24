@@ -700,6 +700,19 @@ namespace CreateSite
                 }
             }
 
+            // Ajout Geolocation
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Geolocation);
+            if (liste.Count > 0)
+            {
+                TreeNode css = treeCisco.Nodes.Add("Geolocation", "Geolocation");
+                foreach (Section section in liste) // Une section par Geoloc
+                {
+                    css.Nodes.Add(section.Name); // Le nom est dans la section
+                }
+            }
+
+
+
             tabControlGeneral.SelectTab("tabPageCisco");
 
 
@@ -741,6 +754,22 @@ namespace CreateSite
                 }
             }
 
+            // Vérif Geoloc
+            TreeNode geo = treeCisco.Nodes["Geolocation"];
+            if (geo != null)
+            {
+                foreach (TreeNode node in geo.Nodes)
+                {
+                    string name = node.Text;
+                    GetGeoLocationRes ge = cisco.GetGeolocation(name);
+                    if (ge != null) // existe déjà
+                    {
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+
         }
 
         private void BtnCiscoCreer_Click(object sender, EventArgs e)
@@ -756,6 +785,19 @@ namespace CreateSite
                 }
             }
 
+            // Créer Geolocation
+            TreeNode geo = treeCisco.Nodes["Geolocation"];
+            if (geo != null)
+            {
+                foreach (TreeNode node in geo.Nodes)
+                {
+                    string name = node.Text;
+                    Section section = ini.Sections.Find(s => s.Type == SectionType.Geolocation && s.Name.Equals(name));
+                    string NAM = section.Options.Find(cv => cv.Cle.Equals("NAM")).Valeur;
+                    string PC = section.Options.Find(cv => cv.Cle.Equals("PC")).Valeur;
+                    cisco.AddGeolocation(name,NAM,PC);
+                }
+            }
 
         }
     }

@@ -254,6 +254,24 @@ namespace CreateSite
             return result;
         }
 
+        public GetDevicePoolRes GetDevicePool(string name)
+        {
+            GetDevicePoolReq req = new GetDevicePoolReq();
+            req.ItemElementName = ItemChoiceType70.name;
+            req.Item = name;
+
+            GetDevicePoolRes res = null;
+            try
+            {
+                res = client.getDevicePool(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
+
+        }
 
         public bool AddTrunk(string name, string destination)
         {
@@ -339,6 +357,24 @@ namespace CreateSite
 
             StandardResponse res = client.addLocation(req);
             return result;
+        }
+
+        public GetLocationRes GetLocation(string name)
+        {
+            GetLocationReq req = new GetLocationReq();
+            req.ItemElementName = ItemChoiceType72.name;
+            req.Item = name;
+
+            GetLocationRes res = null;
+            try
+            {
+                res = client.getLocation(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
         }
 
         public bool AddPhysicalLocation(string name)
@@ -557,7 +593,7 @@ namespace CreateSite
             return result;
         }
      
-        public ListRegionRes GetListRegion()
+        public ListRegionRes ListRegion()
         {
             ListRegionReq req = new ListRegionReq();
             req.searchCriteria = new ListRegionReqSearchCriteria();
@@ -576,7 +612,7 @@ namespace CreateSite
             req.region = new XRegion();
             req.region.name = name;
 
-            ListRegionRes regions = GetListRegion();
+            ListRegionRes regions = ListRegion();
             req.region.relatedRegions = new XRegionRelationship[regions.@return.Length];
             int idx = 0;
             foreach(LRegion region in regions.@return)
@@ -590,6 +626,62 @@ namespace CreateSite
             StandardResponse res = client.addRegion(req);
 
             return result;
+        }
+
+        public GetRegionRes GetRegion(string name)
+        {
+            GetRegionReq req = new GetRegionReq();
+            req.ItemElementName = ItemChoiceType65.name;
+            req.Item = name;
+
+            GetRegionRes res = null;
+            try
+            {
+                res = client.getRegion(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
+        }
+
+        public bool AddGeolocation(string name, string NAM, string PC)
+        {
+            bool result = true;
+
+            AddGeoLocationReq req = new AddGeoLocationReq();
+            req.geoLocation = new XGeoLocation();
+            req.geoLocation.name = name;
+            req.geoLocation.occupantName = NAM;
+            req.geoLocation.postalCode = PC;
+
+            try
+            {
+                StandardResponse res = client.addGeoLocation(req);
+            }
+            catch (Exception)
+            {
+                result = false;
+            }
+            return result;
+        }
+
+        public GetGeoLocationRes GetGeolocation(string name)
+        {
+            GetGeoLocationReq req = new GetGeoLocationReq();
+            req.ItemElementName = ItemChoiceType110.name;
+            req.Item = name;
+
+            GetGeoLocationRes res = null;
+            try
+            {
+                res = client.getGeoLocation(req);
+            }
+            catch (Exception)
+            {
+            }
+            return res;
         }
     }
 

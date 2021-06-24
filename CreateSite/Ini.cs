@@ -20,7 +20,7 @@ namespace CreateSite
 
     public enum IniType { Cisco, Genesys };
 
-    public enum SectionType { Config, Folder, AccessGroup, AgentGroup, VirtualQueue, GroupOfQueue, Place, TransactionList, Person, RoutingPoint, ERP, Skill, CCPulse, Host, CSProxy, Options, Erreur, PhysicalLocation, CallingSearchSpace }; 
+    public enum SectionType { Config, Folder, AccessGroup, AgentGroup, VirtualQueue, GroupOfQueue, Place, TransactionList, Person, RoutingPoint, ERP, Skill, CCPulse, Host, CSProxy, Options, Erreur, PhysicalLocation, CallingSearchSpace, Geolocation }; 
 
     public class Section
     {
@@ -52,6 +52,13 @@ namespace CreateSite
             if ((Name.Length >= 3) && (Name.Substring(0, 3).Equals("CSS")))
             {
                 Type = SectionType.CallingSearchSpace;
+                Name = name.Substring(4, name.Length - 4);
+                return;
+            }
+
+            if ((Name.Length >= 3) && (Name.Substring(0, 3).Equals("GEO")))
+            {
+                Type = SectionType.Geolocation;
                 Name = name.Substring(4, name.Length - 4);
                 return;
             }
