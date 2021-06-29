@@ -225,32 +225,36 @@ namespace CreateSite
             return res;
         }
 
-        public bool AddDevicePool(string name, string ccmg, string datetimegroup, string region, string mrgl, string location, string physlocation, string devicemobilitygroup, string primarylrg, string secondarylrg,string devicemobilitycss, string geolocation)
+        public string AddDevicePool(string name, string ccmg, /*string datetimegroup,*/ string region, string mrgl, string location, string physlocation, /*string devicemobilitygroup,*/ string primarylrg, string secondarylrg,string devicemobilitycss, string geolocation)
         {
-            bool result = true;
-
-            //GetDevicePoolReq r = new GetDevicePoolReq { ItemElementName = ItemChoiceType70.name, Item = "S01_S1a-S1b-S1c_DP" };
-            //GetDevicePoolRes re = client.getDevicePool(r);
+            string result = "";
 
             AddDevicePoolReq req = new AddDevicePoolReq();
             req.devicePool = new XDevicePool();
             req.devicePool.name = name;
             req.devicePool.networkLocale = "France";
             req.devicePool.callManagerGroupName = new XFkType { Value = ccmg };
-            req.devicePool.dateTimeSettingName = new XFkType { Value = datetimegroup };
+            req.devicePool.dateTimeSettingName = new XFkType { Value = "ALL_France_DTG" };
             req.devicePool.regionName = new XFkType { Value = region };
             req.devicePool.mediaResourceListName = new XFkType { Value = mrgl };
             req.devicePool.locationName = new XFkType { Value = location };
             req.devicePool.physicalLocationName = new XFkType { Value = physlocation };
-            req.devicePool.deviceMobilityGroupName = new XFkType { Value = devicemobilitygroup };
+            req.devicePool.deviceMobilityGroupName = new XFkType { Value = "PACIFICA_DMG" };
             req.devicePool.mobilityCssName = new XFkType { Value = devicemobilitycss };
             req.devicePool.geoLocationName = new XFkType { Value = geolocation };
             req.devicePool.localRouteGroup = new XDevicePoolLocalRouteGroup[2];
             req.devicePool.localRouteGroup[0] = new XDevicePoolLocalRouteGroup { name = "Primary Local Route Group", value = primarylrg };
             req.devicePool.localRouteGroup[1] = new XDevicePoolLocalRouteGroup { name = "Secondary Local Route Group", value = secondarylrg };
 
+            try
+            {
+                StandardResponse res = client.addDevicePool(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
 
-            StandardResponse res = client.addDevicePool(req);
             return result;
         }
 
@@ -347,15 +351,23 @@ namespace CreateSite
 
         }
      
-        public bool Addlocation(string name)
+        public string Addlocation(string name)
         {
-            bool result = true;
+            string result = "";
 
             AddLocationReq req = new AddLocationReq();
             req.location = new XLocation();
             req.location.name = name;
 
-            StandardResponse res = client.addLocation(req);
+            try
+            {
+                StandardResponse res = client.addLocation(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
             return result;
         }
 
@@ -377,14 +389,22 @@ namespace CreateSite
             return res;
         }
 
-        public bool AddPhysicalLocation(string name)
+        public string AddPhysicalLocation(string name)
         {
-            bool result = true;
+            string result = "";
 
             AddPhysicalLocationReq req = new AddPhysicalLocationReq();
             req.physicalLocation = new XPhysicalLocation { name = name };
 
-            StandardResponse res = client.addPhysicalLocation(req);
+            try
+            {
+                StandardResponse res = client.addPhysicalLocation(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
             return result;
         }
 
@@ -416,14 +436,23 @@ namespace CreateSite
             req.Items = new Object[2];
             req.Items[0] = number;
             req.Items[1] = new XFkType { Value = partition };
-            GetLineRes res = client.getLine(req);
+
+            GetLineRes res = null;
+
+            try
+            {
+                res = client.getLine(req);
+            }
+            catch (Exception)
+            {
+            }
 
             return res;
         }
 
-        public bool AddLine(string number, string partition, string voicemailprofile, string css,string destinationerror, string csserror, string destinationfwdall, string cssfwdall)
+        public string AddLine(string number, string partition, string voicemailprofile, string css,string destinationerror, string csserror, string destinationfwdall, string cssfwdall)
         {
-            bool result = true;
+            string result = "";
 
             AddLineReq req = new AddLineReq();
             req.line = new XLine();
@@ -444,8 +473,15 @@ namespace CreateSite
                 req.line.callForwardAll = new XCallForwardAll { destination = destinationfwdall, callingSearchSpaceName = new XFkType { Value = cssfwdall} };
             }
 
+            try
+            {
+                StandardResponse res = client.addLine(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
 
-            StandardResponse res = client.addLine(req);
             return result;
         }
 
@@ -455,14 +491,22 @@ namespace CreateSite
             req.ItemElementName = ItemChoiceType127.name;
             req.Item = name;
 
-            GetCtiRoutePointRes res = client.getCtiRoutePoint(req);
+            GetCtiRoutePointRes res = null;
+
+            try
+            {
+                res = client.getCtiRoutePoint(req);
+            }
+            catch (Exception)
+            {
+            }
 
             return res;
         }
 
-        public bool AddCtiRoutingPoint(string name, string description,string devicepool, string css, string location, string number, string partition)
+        public string AddCtiRoutingPoint(string name, string description,string devicepool, string css, string location, string number, string partition)
         {
-            bool result = true;
+            string result = "";
 
             AddCtiRoutePointReq req = new AddCtiRoutePointReq();
             req.ctiRoutePoint = new XCtiRoutePoint();
@@ -481,7 +525,15 @@ namespace CreateSite
             ligne.index = "1";
             req.ctiRoutePoint.lines.Items[0] = ligne;
 
-            StandardResponse res = client.addCtiRoutePoint(req);
+            try
+            {
+                StandardResponse res = client.addCtiRoutePoint(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+            
             return result;
         }
 
@@ -504,77 +556,7 @@ namespace CreateSite
             StandardResponse res = client.updateAppUser(req);
             return result;
         }
-
-        public GetTransPatternRes GetTranslationPattern(string pattern, string partition)
-        {
-            GetTransPatternReq req = new GetTransPatternReq();
-            req.ItemsElementName = new ItemsChoiceType54[2];
-            req.ItemsElementName[0] = ItemsChoiceType54.pattern;
-            req.ItemsElementName[1] = ItemsChoiceType54.routePartitionName;
-            req.Items = new Object[2];
-            req.Items[0] = pattern;
-            req.Items[1] = new XFkType { Value = partition };
-            GetTransPatternRes res = client.getTransPattern(req);
-
-            return res;
-        }
-
-        public bool AddTranslationPattern(string pattern, string partition, string description, string css, string calledpartymask, string callingpartymask)
-        {
-            bool result = true;
-
-            AddTransPatternReq req = new AddTransPatternReq();
-            req.transPattern = new XTransPattern();
-            req.transPattern.pattern = pattern;
-            req.transPattern.routePartitionName = new XFkType { Value = partition };
-            req.transPattern.description = description;
-            req.transPattern.blockEnable = "false";
-            req.transPattern.usage = "Translation";
-            req.transPattern.patternUrgency = "true";
-            req.transPattern.callingSearchSpaceName = new XFkType { Value = css };
-            req.transPattern.calledPartyTransformationMask = calledpartymask;
-            if (!callingpartymask.Equals(""))
-            {
-                req.transPattern.callingPartyTransformationMask = callingpartymask;
-                req.transPattern.useCallingPartyPhoneMask = "On";
-            }
-
-            StandardResponse res = client.addTransPattern(req);
-            return result;
-        }
-
-        public bool AddCallingTransformationPattern(string pattern, string partition, string description, string callingpartymask)
-        {
-            bool result = true;
-
-            AddCallingPartyTransformationPatternReq req = new AddCallingPartyTransformationPatternReq();
-            req.callingPartyTransformationPattern = new XCallingPartyTransformationPattern();
-            req.callingPartyTransformationPattern.pattern = pattern;
-            req.callingPartyTransformationPattern.routePartitionName = new XFkType { Value = partition };
-            req.callingPartyTransformationPattern.description = description;
-            req.callingPartyTransformationPattern.callingPartyTransformationMask = callingpartymask;
-
-            StandardResponse res = client.addCallingPartyTransformationPattern(req);
-
-            return result;
-        }
-
-        public bool AddCalledTransformationPattern(string pattern, string partition, string description, string calledpartymask)
-        {
-            bool result = true;
-
-            AddCalledPartyTransformationPatternReq req = new AddCalledPartyTransformationPatternReq();
-            req.calledPartyTransformationPattern = new XCalledPartyTransformationPattern();
-            req.calledPartyTransformationPattern.pattern = pattern;
-            req.calledPartyTransformationPattern.routePartitionName = new XFkType { Value = partition };
-            req.calledPartyTransformationPattern.description = description;
-            req.calledPartyTransformationPattern.calledPartyTransformationMask = calledpartymask;
-
-            StandardResponse res = client.addCalledPartyTransformationPattern(req);
-
-            return result;
-        }
-
+             
         // Juste pour permettre de créer une liste chez moi : manque tous les codecs
         public bool AddAudioCodecPreferenceList(string name, string description)
         {
@@ -604,9 +586,9 @@ namespace CreateSite
             return res;
         }
 
-        public bool AddRegion(string name, string codecpreflist)
+        public string AddRegion(string name, string codecpreflist)
         {
-            bool result = true;
+            string result = "";
 
             AddRegionReq req = new AddRegionReq();
             req.region = new XRegion();
@@ -623,7 +605,14 @@ namespace CreateSite
                 idx++;
             }
 
-            StandardResponse res = client.addRegion(req);
+            try
+            {
+                StandardResponse res = client.addRegion(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
 
             return result;
         }
@@ -646,9 +635,9 @@ namespace CreateSite
             return res;
         }
 
-        public bool AddGeolocation(string name, string NAM, string PC)
+        public string AddGeolocation(string name, string NAM, string PC)
         {
-            bool result = true;
+            string result = "";
 
             AddGeoLocationReq req = new AddGeoLocationReq();
             req.geoLocation = new XGeoLocation();
@@ -660,9 +649,9 @@ namespace CreateSite
             {
                 StandardResponse res = client.addGeoLocation(req);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                result = false;
+                result = "Msg : " + e.Message;
             }
             return result;
         }
@@ -683,6 +672,330 @@ namespace CreateSite
             }
             return res;
         }
-    }
 
+        public string AddLineGroup(string name)
+        {
+            string result = "";
+
+            AddLineGroupReq req = new AddLineGroupReq();
+            req.lineGroup = new XLineGroup();
+            req.lineGroup.name = name;
+            req.lineGroup.rnaReversionTimeOut = "25";
+            req.lineGroup.distributionAlgorithm = "Longest Idle Time";
+
+            try
+            {
+                StandardResponse res = client.addLineGroup(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
+            return result;
+        }
+
+        public GetLineGroupRes GetLineGroup(string name)
+        {
+            GetLineGroupReq req = new GetLineGroupReq();
+            req.ItemElementName = ItemChoiceType90.name;
+            req.Item = name;
+
+            GetLineGroupRes res = null;
+            try
+            {
+                res = client.getLineGroup(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
+        }
+
+        public string AddHuntList(string name, string description, string CUCMGroup, string linegroup)
+        {
+            string result = "";
+
+            AddHuntListReq req = new AddHuntListReq();
+            req.huntList = new XHuntList();
+            req.huntList.name = name;
+            req.huntList.description = name;
+            req.huntList.routeListEnabled = "true";
+            req.huntList.callManagerGroupName = new XFkType { Value = CUCMGroup };
+            req.huntList.members = new XHuntListMembers();
+            req.huntList.members.member = new XHuntListMember[1];
+            req.huntList.members.member[0] = new XHuntListMember();
+            req.huntList.members.member[0].lineGroupName = new XFkType { Value = linegroup };
+            req.huntList.members.member[0].selectionOrder = "1";
+
+            try
+            {
+                StandardResponse res = client.addHuntList(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
+            return result;
+        }
+
+        public GetHuntListRes GetHuntList(string name)
+        {
+            GetHuntListReq req = new GetHuntListReq();
+            req.ItemElementName = ItemChoiceType87.name;
+            req.Item = name;
+
+            GetHuntListRes res = null;
+            try
+            {
+                res = client.getHuntList(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
+        }
+
+        public string AddHuntPilot(string number, string partition, string description, string huntlist)
+        {
+            string  result = "";
+
+            AddHuntPilotReq req = new AddHuntPilotReq();
+            req.huntPilot = new XHuntPilot();
+            req.huntPilot.pattern = number;
+            req.huntPilot.routePartitionName = new XFkType { Value = partition };
+            req.huntPilot.description = description;
+            req.huntPilot.huntListName = new XFkType { Value = huntlist };
+            req.huntPilot.provideOutsideDialtone = "1";
+
+            try
+            {
+                StandardResponse res = client.addHuntPilot(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
+            return result;
+        }
+
+        public GetHuntPilotRes GetHuntPilot(string number, string partition)
+        {
+            GetHuntPilotReq req = new GetHuntPilotReq();
+            req.ItemsElementName = new ItemsChoiceType60[2];
+            req.ItemsElementName[0] = ItemsChoiceType60.pattern;
+            req.ItemsElementName[1] = ItemsChoiceType60.routePartitionName;
+            req.Items = new Object[2];
+            req.Items[0] = number;
+            req.Items[1] = new XFkType { Value = partition };
+
+            GetHuntPilotRes res = null;
+            try
+            {
+                res = client.getHuntPilot(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
+        }
+
+        public string AddTranslationPattern(string pattern, string partition, string description, string css, string calledpartymask, string callingpartymask)
+        {
+            string result = "";
+
+            AddTransPatternReq req = new AddTransPatternReq();
+            req.transPattern = new XTransPattern();
+            req.transPattern.pattern = pattern;
+            req.transPattern.routePartitionName = new XFkType { Value = partition };
+            req.transPattern.description = description;
+            req.transPattern.blockEnable = "false";
+            req.transPattern.usage = "Translation";
+            req.transPattern.patternUrgency = "true";
+            req.transPattern.provideOutsideDialtone = "1";
+            req.transPattern.callingSearchSpaceName = new XFkType { Value = css };
+            req.transPattern.calledPartyTransformationMask = calledpartymask;
+            if (!callingpartymask.Equals(""))
+            {
+                req.transPattern.callingPartyTransformationMask = callingpartymask;
+                req.transPattern.useCallingPartyPhoneMask = "On";
+            }
+
+            try
+            {
+                StandardResponse res = client.addTransPattern(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+            return result;
+        }
+
+        public GetTransPatternRes GetTranslationPattern(string number, string partition)
+        {
+            GetTransPatternReq req = new GetTransPatternReq();
+            req.ItemsElementName = new ItemsChoiceType54[2];
+            req.ItemsElementName[0] = ItemsChoiceType54.pattern;
+            req.ItemsElementName[1] = ItemsChoiceType54.routePartitionName;
+            req.Items = new Object[2];
+            req.Items[0] = number;
+            req.Items[1] = new XFkType { Value = partition };
+
+            GetTransPatternRes res = null;
+            try
+            {
+                res = client.getTransPattern(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
+
+        }
+
+        public string AddCallingPartyTransformationPattern(string pattern, string partition, string description, string mask)
+        {
+            string result = "";
+
+            AddCallingPartyTransformationPatternReq req = new AddCallingPartyTransformationPatternReq();
+            req.callingPartyTransformationPattern = new XCallingPartyTransformationPattern();
+            req.callingPartyTransformationPattern.pattern = pattern;
+            req.callingPartyTransformationPattern.routePartitionName = new XFkType { Value = partition };
+            req.callingPartyTransformationPattern.description = description;
+            req.callingPartyTransformationPattern.callingPartyTransformationMask = mask;
+
+            try
+            {
+                StandardResponse res = client.addCallingPartyTransformationPattern(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
+            return result;
+        }
+
+        public GetCallingPartyTransformationPatternRes GetCallingPartyTransformationPattern(string number, string partition)
+        {
+            GetCallingPartyTransformationPatternReq req = new GetCallingPartyTransformationPatternReq();
+            req.ItemsElementName = new ItemsChoiceType56[2];
+            req.ItemsElementName[0] = ItemsChoiceType56.pattern;
+            req.ItemsElementName[1] = ItemsChoiceType56.routePartitionName;
+            req.Items = new Object[2];
+            req.Items[0] = number;
+            req.Items[1] = new XFkType { Value = partition };
+
+            GetCallingPartyTransformationPatternRes res = null;
+            try
+            {
+                res = client.getCallingPartyTransformationPattern(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
+        }
+
+        public string AddCalledPartyTransformationPattern(string pattern, string partition, string description, string mask)
+        {
+            string result = "";
+
+            AddCalledPartyTransformationPatternReq req = new AddCalledPartyTransformationPatternReq();
+            req.calledPartyTransformationPattern = new XCalledPartyTransformationPattern();
+            req.calledPartyTransformationPattern.pattern = pattern;
+            req.calledPartyTransformationPattern.routePartitionName = new XFkType { Value = partition };
+            req.calledPartyTransformationPattern.description = description;
+            req.calledPartyTransformationPattern.calledPartyTransformationMask = mask;
+
+            try
+            {
+                StandardResponse res = client.addCalledPartyTransformationPattern(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
+            return result;
+        }
+
+        public GetCalledPartyTransformationPatternRes GetCalledPartyTransformationPattern(string number, string partition)
+        {
+            GetCalledPartyTransformationPatternReq req = new GetCalledPartyTransformationPatternReq();
+            req.ItemsElementName = new ItemsChoiceType71[2];
+            req.ItemsElementName[0] = ItemsChoiceType71.pattern;
+            req.ItemsElementName[1] = ItemsChoiceType71.routePartitionName;
+            req.Items = new Object[2];
+            req.Items[0] = number;
+            req.Items[1] = new XFkType { Value = partition };
+
+            GetCalledPartyTransformationPatternRes res = null;
+            try
+            {
+                res = client.getCalledPartyTransformationPattern(req);
+            }
+            catch (Exception)
+            {
+            }
+
+            return res;
+        }
+
+        public string AddDeviceMobilityInfo(string name, string subnet, string mask, string devicepool)
+        {
+            string result = "";
+
+            AddDeviceMobilityReq req = new AddDeviceMobilityReq();
+            req.deviceMobility = new XDeviceMobility();
+            req.deviceMobility.name = name;
+            req.deviceMobility.subNetDetails = new XDeviceMobilitySubNetDetails();
+            req.deviceMobility.subNetDetails.Item = new XDeviceMobilitySubNetDetailsIpv4SubNetDetails();
+            ((XDeviceMobilitySubNetDetailsIpv4SubNetDetails)req.deviceMobility.subNetDetails.Item).ipv4Subnet = subnet;
+            ((XDeviceMobilitySubNetDetailsIpv4SubNetDetails)req.deviceMobility.subNetDetails.Item).ipv4SubNetMaskSz = mask;
+            req.deviceMobility.members = new XDeviceMobilityMembers();
+            req.deviceMobility.members.member = new XDevicePoolDeviceMobility[1];
+            req.deviceMobility.members.member[0] = new XDevicePoolDeviceMobility();
+            req.deviceMobility.members.member[0].devicePoolName = new XFkType { Value = devicepool };
+
+
+            try
+            {
+                StandardResponse res = client.addDeviceMobility(req);
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
+            return result;
+        }
+
+        public GetDeviceMobilityRes GetDeviceMobilityInfo(string name)
+        {
+            GetDeviceMobilityReq req = new GetDeviceMobilityReq();
+            req.ItemElementName = ItemChoiceType82.name;
+            req.Item = name;
+
+            GetDeviceMobilityRes res = null;
+            try
+            {
+                res = client.getDeviceMobility(req);
+            }
+            catch (Exception)
+            {
+                res = null;
+            }
+
+            return res;
+        }
+    }
 }

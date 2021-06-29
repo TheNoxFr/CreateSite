@@ -23,6 +23,25 @@ namespace CreateSite
         public Cisco cisco;
         public Section config;
 
+        public const string LBL_PHYSICAL_LOCATION = "Physical Location";
+        public const string LBL_LOCATION = "Location";
+        public const string LBL_CSS = "Calling Search Space";
+        public const string LBL_HUNT_LIST = "Hunt List";
+        public const string LBL_GEOLOC = "Geolocation";
+        public const string LBL_LINEGROUP = "Line Group";
+        public const string LBL_HUNT_PILOT = "Hunt Pilot";
+        public const string LBL_TRANSLATION_PATTERN = "Translation Pattern";
+        public const string LBL_CALG_PARTY_TFP = "Calling Party TFPattern";
+        public const string LBL_CALD_PARTY_TFP = "Called Party TFPattern";
+        public const string LBL_DEVICE_MOBILITY = "Device Mobility";
+        public const string LBL_REGION = "Region";
+        public const string LBL_DEVICE_POOL = "Device Pool";
+        public const string LBL_LINE = "Line";
+        public const string LBL_CTI_ROUTEPOINT = "CTI RoutePoint";
+
+        public enum TraceLevel { INFO, WARNING, ERROR };
+        public enum Target { Cisco, Genesys };
+
         public Main()
         {
             InitializeComponent();
@@ -666,9 +685,9 @@ namespace CreateSite
 
             try
             {
-                lblCiscoCodeUGS.Text = config.Options.Find(cv => cv.Cle.Equals("Site")).Valeur;
-                lblCiscoVille.Text = config.Options.Find(cv => cv.Cle.Equals("Nom")).Valeur;
-                lblCiscoNumPrefixe.Text = config.Options.Find(cv => cv.Cle.Equals("PlanNum")).Valeur;
+                lblCiscoCodeUGS.Text = config.getOption("Site");
+                lblCiscoVille.Text = config.getOption("Nom");
+                lblCiscoNumPrefixe.Text = config.getOption("PlanNum");
 
             }
             catch (Exception)
@@ -682,10 +701,21 @@ namespace CreateSite
             liste = ini.Sections.FindAll(s => s.Type == SectionType.PhysicalLocation);
             if (liste.Count > 0)
             {
-                TreeNode phyloc = treeCisco.Nodes.Add("Physical Location", "Physical Location");
-                foreach (CleValeur clevaleur in liste[0].Options) // On considère une seule section dans tout le fichier
+                TreeNode phyloc = treeCisco.Nodes.Add(LBL_PHYSICAL_LOCATION, LBL_PHYSICAL_LOCATION);
+                foreach (Section section in liste)
                 {
-                    phyloc.Nodes.Add(clevaleur.Valeur); // Une seule option : le nom
+                    phyloc.Nodes.Add(section.Name); 
+                }
+            }
+
+            // Ajout Location
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Location);
+            if (liste.Count > 0)
+            {
+                TreeNode loc = treeCisco.Nodes.Add(LBL_LOCATION, LBL_LOCATION);
+                foreach (Section section in liste)
+                {
+                    loc.Nodes.Add(section.Name);
                 }
             }
 
@@ -693,7 +723,7 @@ namespace CreateSite
             liste = ini.Sections.FindAll(s => s.Type == SectionType.CallingSearchSpace);
             if (liste.Count > 0)
             {
-                TreeNode css = treeCisco.Nodes.Add("Calling Search Space", "Calling Search Space");
+                TreeNode css = treeCisco.Nodes.Add(LBL_CSS, LBL_CSS);
                 foreach (Section section in liste) // Une section par CSS
                 {
                     css.Nodes.Add(section.Name); // Le nom est dans la section
@@ -704,14 +734,136 @@ namespace CreateSite
             liste = ini.Sections.FindAll(s => s.Type == SectionType.Geolocation);
             if (liste.Count > 0)
             {
-                TreeNode css = treeCisco.Nodes.Add("Geolocation", "Geolocation");
+                TreeNode css = treeCisco.Nodes.Add(LBL_GEOLOC, LBL_GEOLOC);
                 foreach (Section section in liste) // Une section par Geoloc
                 {
                     css.Nodes.Add(section.Name); // Le nom est dans la section
                 }
             }
 
+            // Ajout Line Group
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.LineGroup);
+            if (liste.Count > 0)
+            {
+                TreeNode lg = treeCisco.Nodes.Add(LBL_LINEGROUP, LBL_LINEGROUP);
+                foreach (Section section in liste) // Une section par Line Group
+                {
+                    lg.Nodes.Add(section.Name); // Le nom est dans la section
+                }
+            }
 
+            // Ajout Hunt List
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.HuntList);
+            if (liste.Count > 0)
+            {
+                TreeNode hl = treeCisco.Nodes.Add(LBL_HUNT_LIST, LBL_HUNT_LIST);
+                foreach (Section section in liste) // Une section par Line Group
+                {
+                    hl.Nodes.Add(section.Name); // Le nom est dans la section
+                }
+            }
+
+            // Ajout Hunt Pilot
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.HuntPilot);
+            if (liste.Count > 0)
+            {
+                TreeNode hp = treeCisco.Nodes.Add(LBL_HUNT_PILOT, LBL_HUNT_PILOT);
+                foreach (Section section in liste) 
+                {
+                    hp.Nodes.Add(section.Name); // Le numéro est dans la section
+                }
+            }
+
+            // Ajout Translation Pattern
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.TranslationPattern);
+            if (liste.Count > 0)
+            {
+                TreeNode tp = treeCisco.Nodes.Add(LBL_TRANSLATION_PATTERN, LBL_TRANSLATION_PATTERN);
+                foreach (Section section in liste)
+                {
+                    tp.Nodes.Add(section.Name); // Le numéro est dans la section
+                }
+            }
+
+            // Ajout Calling Party Tranformation Pattern
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.CallingPartyTransformationPattern);
+            if (liste.Count > 0)
+            {
+                TreeNode cg = treeCisco.Nodes.Add(LBL_CALG_PARTY_TFP, LBL_CALG_PARTY_TFP);
+                foreach (Section section in liste)
+                {
+                    cg.Nodes.Add(section.Name); 
+                }
+            }
+
+            // Ajout Called Party Tranformation Pattern
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.CalledPartyTransformationPattern);
+            if (liste.Count > 0)
+            {
+                TreeNode cd = treeCisco.Nodes.Add(LBL_CALD_PARTY_TFP, LBL_CALD_PARTY_TFP);
+                foreach (Section section in liste)
+                {
+                    cd.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Device Mobility Info
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.DeviceMobilityInfo);
+            if (liste.Count > 0)
+            {
+                TreeNode dm = treeCisco.Nodes.Add(LBL_DEVICE_MOBILITY, LBL_DEVICE_MOBILITY);
+                foreach (Section section in liste)
+                {
+                    dm.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Region
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Region);
+            if (liste.Count > 0)
+            {
+                TreeNode re = treeCisco.Nodes.Add(LBL_REGION, LBL_REGION);
+                foreach (Section section in liste)
+                {
+                    re.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Device Pool
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.DevicePool);
+            if (liste.Count > 0)
+            {
+                TreeNode dp = treeCisco.Nodes.Add(LBL_DEVICE_POOL, LBL_DEVICE_POOL);
+                foreach (Section section in liste)
+                {
+                    dp.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Line
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Line);
+            if (liste.Count > 0)
+            {
+                TreeNode li = treeCisco.Nodes.Add(LBL_LINE, LBL_LINE);
+                foreach (Section section in liste)
+                {
+                    li.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout CTI RoutePoint
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.CTIRoutePoint);
+            if (liste.Count > 0)
+            {
+                TreeNode cti = treeCisco.Nodes.Add(LBL_CTI_ROUTEPOINT, LBL_CTI_ROUTEPOINT);
+                foreach (Section section in liste)
+                {
+                    cti.Nodes.Add(section.Name);
+                }
+            }
+
+
+            treeCisco.ExpandAll();
 
             tabControlGeneral.SelectTab("tabPageCisco");
 
@@ -724,8 +876,12 @@ namespace CreateSite
             cisco = new Cisco("https://192.168.1.46:8443/axl/", "ccmadministrator", "BcH1Kf0T");
             cisco.Init();
 
+            Trace(Target.Cisco, TraceLevel.INFO, "------------------------------");
+            Trace(Target.Cisco, TraceLevel.INFO, "Début Vérification.");
+
             // Vérif Physical Location
-            TreeNode phyloc = treeCisco.Nodes["Physical Location"];
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification "+ LBL_PHYSICAL_LOCATION);
+            TreeNode phyloc = treeCisco.Nodes[LBL_PHYSICAL_LOCATION];
             if (phyloc != null)
             {
                 foreach(TreeNode node in phyloc.Nodes)
@@ -734,28 +890,32 @@ namespace CreateSite
                     GetPhysicalLocationRes ph = cisco.GetPhysicalLocation(name);
                     if (ph != null) // existe déjà
                     {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
                         node.BackColor = Color.Red;
                     }
                 }
             }
 
-            // Vérif CSS
-            TreeNode css = treeCisco.Nodes["Calling Search Space"];
-            if (css != null)
+            // Vérif Location
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_LOCATION);
+            TreeNode loc = treeCisco.Nodes[LBL_LOCATION];
+            if (loc != null)
             {
-                foreach (TreeNode node in css.Nodes)
+                foreach (TreeNode node in loc.Nodes)
                 {
                     string name = node.Text;
-                    GetCssRes cs = cisco.GetCSS(name);
-                    if (cs != null) // existe déjà
+                    GetLocationRes lo = cisco.GetLocation(name);
+                    if (lo != null) // existe déjà
                     {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
                         node.BackColor = Color.Red;
                     }
                 }
             }
 
             // Vérif Geoloc
-            TreeNode geo = treeCisco.Nodes["Geolocation"];
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_GEOLOC);
+            TreeNode geo = treeCisco.Nodes[LBL_GEOLOC];
             if (geo != null)
             {
                 foreach (TreeNode node in geo.Nodes)
@@ -764,6 +924,200 @@ namespace CreateSite
                     GetGeoLocationRes ge = cisco.GetGeolocation(name);
                     if (ge != null) // existe déjà
                     {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Line Group
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_LINEGROUP);
+            TreeNode lg = treeCisco.Nodes[LBL_LINEGROUP];
+            if (lg != null)
+            {
+                foreach (TreeNode node in lg.Nodes)
+                {
+                    string name = node.Text;
+                    GetLineGroupRes l = cisco.GetLineGroup(name);
+                    if (l != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Hunt List
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_HUNT_LIST);
+            TreeNode hl = treeCisco.Nodes[LBL_HUNT_LIST];
+            if (hl != null)
+            {
+                foreach (TreeNode node in hl.Nodes)
+                {
+                    string name = node.Text;
+                    GetHuntListRes h = cisco.GetHuntList(name);
+                    if (h != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Hunt Pilot
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_HUNT_PILOT);
+            TreeNode hp = treeCisco.Nodes[LBL_HUNT_PILOT];
+            if (hp != null)
+            {
+                foreach (TreeNode node in hp.Nodes)
+                {
+                    string numero = node.Text;
+                    GetHuntPilotRes h = cisco.GetHuntPilot(numero,"ALL_Interne_P");
+                    if (h != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " ALL_Interne_P");
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Translation Pattern
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_TRANSLATION_PATTERN);
+            TreeNode tp = treeCisco.Nodes[LBL_TRANSLATION_PATTERN];
+            if (tp != null)
+            {
+                foreach (TreeNode node in tp.Nodes)
+                {
+                    string numero = node.Text;
+                    GetTransPatternRes t = cisco.GetTranslationPattern(numero, "ALL_Interne_P");
+                    if (t != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " ALL_Interne_P");
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Calling Party Transformation Pattern
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_CALG_PARTY_TFP);
+            TreeNode cg = treeCisco.Nodes[LBL_CALG_PARTY_TFP];
+            if (cg != null)
+            {
+                foreach (TreeNode node in cg.Nodes)
+                {
+                    string numero = node.Text;
+                    Section section = ini.Sections.Find(s => s.Type == SectionType.CallingPartyTransformationPattern && s.Name.Equals(numero));
+                    string partition = section.getOption("Partition");
+                    GetCallingPartyTransformationPatternRes c = cisco.GetCallingPartyTransformationPattern(numero, partition);
+                    if (c != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " " + partition);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Called Party Transformation Pattern
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_CALD_PARTY_TFP);
+            TreeNode cd = treeCisco.Nodes[LBL_CALD_PARTY_TFP];
+            if (cd != null)
+            {
+                foreach (TreeNode node in cd.Nodes)
+                {
+                    string numero = node.Text;
+                    Section section = ini.Sections.Find(s => s.Type == SectionType.CalledPartyTransformationPattern && s.Name.Equals(numero));
+                    string partition = section.getOption("Partition");
+                    GetCalledPartyTransformationPatternRes c = cisco.GetCalledPartyTransformationPattern(numero, partition);
+                    if (c != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " " + partition);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Device Mobility Info
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_DEVICE_MOBILITY);
+            TreeNode dm = treeCisco.Nodes[LBL_DEVICE_MOBILITY];
+            if (dm != null)
+            {
+                foreach (TreeNode node in dm.Nodes)
+                {
+                    string name = node.Text;
+                    GetDeviceMobilityRes d = cisco.GetDeviceMobilityInfo(name);
+                    if (d != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Region
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_REGION);
+            TreeNode re = treeCisco.Nodes[LBL_REGION];
+            if (re != null)
+            {
+                foreach (TreeNode node in re.Nodes)
+                {
+                    string name = node.Text;
+                    GetRegionRes r = cisco.GetRegion(name);
+                    if (r != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Device Pool
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_DEVICE_POOL);
+            TreeNode dp = treeCisco.Nodes[LBL_DEVICE_POOL];
+            if (dp != null)
+            {
+                foreach (TreeNode node in dp.Nodes)
+                {
+                    string name = node.Text;
+                    GetDevicePoolRes d = cisco.GetDevicePool(name);
+                    if (d != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Line
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_LINE);
+            TreeNode li = treeCisco.Nodes[LBL_LINE];
+            if (li != null)
+            {
+                foreach (TreeNode node in li.Nodes)
+                {
+                    string numero = node.Text;
+                    Section section = ini.Sections.Find(s => s.Type == SectionType.Line && s.Name.Equals(numero));
+                    string partition = section.getOption("Partition");
+                    GetLineRes l = cisco.GetLine(numero, partition);
+                    if (l != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " " + partition);
+                        node.BackColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif CTI Route Point
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_CTI_ROUTEPOINT);
+            TreeNode cti = treeCisco.Nodes[LBL_CTI_ROUTEPOINT];
+            if (cti != null)
+            {
+                foreach (TreeNode node in cti.Nodes)
+                {
+                    string name = node.Text;
+                    GetCtiRoutePointRes c = cisco.GetCtiRoutingPoint(name);
+                    if (c != null) // existe déjà
+                    {
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
                         node.BackColor = Color.Red;
                     }
                 }
@@ -774,31 +1128,485 @@ namespace CreateSite
 
         private void BtnCiscoCreer_Click(object sender, EventArgs e)
         {
+            Trace(Target.Cisco, TraceLevel.INFO, "------------------------------");
+            Trace(Target.Cisco, TraceLevel.INFO, "Début Création.");
+
             // Crée Physical Location
-            TreeNode phyloc = treeCisco.Nodes["Physical Location"];
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_PHYSICAL_LOCATION);
+            TreeNode phyloc = treeCisco.Nodes[LBL_PHYSICAL_LOCATION];
             if (phyloc != null)
             {
                 foreach (TreeNode node in phyloc.Nodes)
                 {
-                    string name = node.Text;
-                    cisco.AddPhysicalLocation(name);
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        string res = cisco.AddPhysicalLocation(name);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        } else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+            // Crée Location
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_LOCATION);
+            TreeNode loc = treeCisco.Nodes[LBL_LOCATION];
+            if (loc != null)
+            {
+                foreach (TreeNode node in loc.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        string res = cisco.Addlocation(name);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
                 }
             }
 
             // Créer Geolocation
-            TreeNode geo = treeCisco.Nodes["Geolocation"];
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_GEOLOC);
+            TreeNode geo = treeCisco.Nodes[LBL_GEOLOC];
             if (geo != null)
             {
                 foreach (TreeNode node in geo.Nodes)
                 {
-                    string name = node.Text;
-                    Section section = ini.Sections.Find(s => s.Type == SectionType.Geolocation && s.Name.Equals(name));
-                    string NAM = section.Options.Find(cv => cv.Cle.Equals("NAM")).Valeur;
-                    string PC = section.Options.Find(cv => cv.Cle.Equals("PC")).Valeur;
-                    cisco.AddGeolocation(name,NAM,PC);
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.Geolocation && s.Name.Equals(name));
+                        string NAM = section.getOption("NAM");
+                        string PC = section.getOption("PC");
+                        string res = cisco.AddGeolocation(name, NAM, PC);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
                 }
             }
 
+            // Créer Line Group
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_LINEGROUP);
+            TreeNode lg = treeCisco.Nodes[LBL_LINEGROUP];
+            if (lg != null)
+            {
+                foreach (TreeNode node in lg.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        string res = cisco.AddLineGroup(name);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+            // Créer Hunt List
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_HUNT_LIST);
+            TreeNode hl = treeCisco.Nodes[LBL_HUNT_LIST];
+            if (hl != null)
+            {
+                foreach (TreeNode node in hl.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.HuntList && s.Name.Equals(name));
+                        string cucmg = section.getOption("CUCMG");
+                        string linegroup = section.getOption("LineGroup");
+                        string res = cisco.AddHuntList(name, name, cucmg, linegroup);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+            // Créer Hunt Pilot
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_HUNT_PILOT);
+            TreeNode hp = treeCisco.Nodes[LBL_HUNT_PILOT];
+            if (hp != null)
+            {
+                foreach (TreeNode node in hp.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string numero = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.HuntPilot && s.Name.Equals(numero));
+                        string description = section.getOption("Description");
+                        string huntlist = section.getOption("HuntList");
+                        string res = cisco.AddHuntPilot(numero, "ALL_Interne_P", description, huntlist);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, numero + " ALL_Interne_P" + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + numero + " ALL_Interne_P");
+                        }
+                    }
+                }
+            }
+
+            // Créer Translation Pattern
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_TRANSLATION_PATTERN);
+            TreeNode tp = treeCisco.Nodes[LBL_TRANSLATION_PATTERN];
+            if (tp != null)
+            {
+                foreach (TreeNode node in tp.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string numero = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.TranslationPattern && s.Name.Equals(numero));
+                        string description = section.getOption("Description");
+                        string calledmask = section.getOption("CalledMask");
+                        string callingmask = section.getOption("CallingMask");
+                        string res = cisco.AddTranslationPattern(numero, "ALL_Interne_P", description, "SYS_Technique_CSS", calledmask, callingmask);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, numero + " ALL_Interne_P" + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + numero + " ALL_Interne_P");
+                        }
+                    }
+                }
+            }
+
+            // Créer Calling Party Transformation Pattern
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_CALG_PARTY_TFP);
+            TreeNode cg = treeCisco.Nodes[LBL_CALG_PARTY_TFP];
+            if (cg != null)
+            {
+                foreach (TreeNode node in cg.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string numero = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.CallingPartyTransformationPattern && s.Name.Equals(numero));
+                        string partition = section.getOption("Partition");
+                        string description = section.getOption("Description");
+                        string mask = section.getOption("Mask");
+                        string res = cisco.AddCallingPartyTransformationPattern(numero, partition, description, mask);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, numero + " " + partition + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + numero + " " + partition);
+                        }
+                    }
+                }
+            }
+
+            // Créer Called Party Transformation Pattern
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_CALD_PARTY_TFP);
+            TreeNode cd = treeCisco.Nodes[LBL_CALD_PARTY_TFP];
+            if (cd != null)
+            {
+                foreach (TreeNode node in cd.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string numero = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.CalledPartyTransformationPattern && s.Name.Equals(numero));
+                        string partition = section.getOption("Partition");
+                        string description = section.getOption("Description");
+                        string mask = section.getOption("Mask");
+                        string res = cisco.AddCalledPartyTransformationPattern(numero, partition, description, mask);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, numero + " " + partition + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + numero + " " + partition);
+                        }
+                    }
+                }
+            }
+
+            // Créer Device Mobility Info
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_DEVICE_MOBILITY);
+            TreeNode dm = treeCisco.Nodes[LBL_DEVICE_MOBILITY];
+            if (dm != null)
+            {
+                foreach (TreeNode node in dm.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.DeviceMobilityInfo && s.Name.Equals(name));
+                        string subnet = section.getOption("Subnet");
+                        string devicepool = section.getOption("DevicePool");
+                        string mask = section.getOption("Mask");
+                        string res = cisco.AddDeviceMobilityInfo(name, subnet, mask, devicepool);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+            // Créer Region
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_REGION);
+            TreeNode re = treeCisco.Nodes[LBL_REGION];
+            if (re != null)
+            {
+                foreach (TreeNode node in re.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.Region && s.Name.Equals(name));
+                        string codeclist = section.getOption("CodecList");
+                        string res = cisco.AddRegion(name, codeclist);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+            // Créer Device Pool
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_DEVICE_POOL);
+            TreeNode dp = treeCisco.Nodes[LBL_DEVICE_POOL];
+            if (dp != null)
+            {
+                foreach (TreeNode node in dp.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.DevicePool && s.Name.Equals(name));
+                        string ccmg = section.getOption("CCMG");
+                        //string datetimegroup = section.getOption("DateTimeGroup");
+                        string region = section.getOption("Region");
+                        string mrgl = section.getOption("MRGL");
+                        string location = section.getOption("Location");
+                        string physicallocation = section.getOption("PhysicalLocation");
+                        //string devicemobilitygroup = section.getOption("DeviceMobilityGroup");
+                        string primarylrg = section.getOption("PrimaryLocalRouteGroup");
+                        string secondarylrg = section.getOption("SecondaryLocalRouteGroup");
+                        string devicemobilitycss = section.getOption("DeviceMobilityCSS");
+                        string geolocation = section.getOption("Geolocation");
+                        string res = cisco.AddDevicePool(name, ccmg, region, mrgl, location, physicallocation, primarylrg, secondarylrg, devicemobilitycss, geolocation);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+            // Créer Line
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_LINE);
+            TreeNode li = treeCisco.Nodes[LBL_LINE];
+            if (li != null)
+            {
+                foreach (TreeNode node in li.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string numero = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.Line && s.Name.Equals(numero));
+                        string partition = section.getOption("Partition");
+                        string voicemailprofile = section.getOption("VoiceMailProfile");
+                        string css = section.getOption("CSS");
+                        string destinationerror = section.getOption("DestinationError");
+                        string csserror = section.getOption("CssError");
+                        string destinationfwdall = section.getOption("DestinationForwardAll");
+                        string cssfwdall = section.getOption("CssForwardAll");
+                        string res = cisco.AddLine(numero, partition, voicemailprofile, css, destinationerror, csserror, destinationfwdall, cssfwdall);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, numero + " " + partition + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + numero + " " + partition);
+                        }
+                    }
+                }
+            }
+
+            // Créer CTI Route Point
+            Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_CTI_ROUTEPOINT);
+            TreeNode cti = treeCisco.Nodes[LBL_CTI_ROUTEPOINT];
+            if (cti != null)
+            {
+                foreach (TreeNode node in cti.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        Section section = ini.Sections.Find(s => s.Type == SectionType.CTIRoutePoint && s.Name.Equals(name));
+                        string description = section.getOption("Description");
+                        string line = section.getOption("Line");
+                        string css = section.getOption("CSS");
+                        string partition = section.getOption("Partition");
+                        string devicepool = section.getOption("DevicePool");
+                        string location = section.getOption("Location");
+                        string res = cisco.AddCtiRoutingPoint(name, description, devicepool, css, location, line, partition);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+        // Updates all child tree nodes recursively.
+        private void CheckAllChildNodes(TreeNode treeNode, bool nodeChecked)
+        {
+            foreach (TreeNode node in treeNode.Nodes)
+            {
+                node.Checked = nodeChecked;
+                if (node.Nodes.Count > 0)
+                {
+                    // If the current node has child nodes, call the CheckAllChildsNodes method recursively.
+                    this.CheckAllChildNodes(node, nodeChecked);
+                }
+            }
+        }
+
+        private void treeCisco_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            // Quand on coche ou décoche une case
+            if (e.Action != TreeViewAction.Unknown)
+            {
+                // si il y a des fils
+                if (e.Node.Nodes.Count > 0)
+                {
+                    this.CheckAllChildNodes(e.Node, e.Node.Checked);
+                } else // si on était sur un fils
+                {
+                    // si on décoche alors on décoche le parent
+                    if (!e.Node.Checked)
+                    {
+                        e.Node.Parent.Checked = false;
+                    } else
+                    {
+                        // Si tous les autres fils sont cochés, alos on coche le parent
+                        TreeNode parent = e.Node.Parent;
+                        bool coche = true;
+                        foreach(TreeNode fils in parent.Nodes)
+                        {
+                            if (!fils.Checked)
+                                coche = false;
+                        }
+                        if (coche)
+                            parent.Checked = true;
+                    }
+                }
+            }
+        }
+
+        public void Trace(Target target, TraceLevel level, string text)
+        {
+            RichTextBox richText = null;
+
+            switch (target)
+            {
+                case Target.Cisco:
+                    richText = rtCiscoLog;
+                    break;
+                case Target.Genesys:
+                    richText = null;
+                    break;
+            }
+
+
+            richText.SelectionStart = richText.TextLength;
+            richText.SelectionLength = 0;
+
+            switch (level)
+            {
+                case TraceLevel.INFO:
+                    richText.SelectionColor = Color.Green;
+                    break;
+                case TraceLevel.WARNING:
+                    richText.SelectionColor = Color.Orange;
+                    break;
+                case TraceLevel.ERROR:
+                    richText.SelectionColor = Color.Red;
+                    break;
+            }
+
+            richText.AppendText(DateTime.Now.ToString("HH:mm"));
+            richText.AppendText(" : ");
+            richText.AppendText(text);
+            richText.AppendText("\r\n");
+
+            richText.SelectionStart = richText.Text.Length;
+            richText.ScrollToCaret();
         }
     }
 }

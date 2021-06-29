@@ -20,7 +20,9 @@ namespace CreateSite
 
     public enum IniType { Cisco, Genesys };
 
-    public enum SectionType { Config, Folder, AccessGroup, AgentGroup, VirtualQueue, GroupOfQueue, Place, TransactionList, Person, RoutingPoint, ERP, Skill, CCPulse, Host, CSProxy, Options, Erreur, PhysicalLocation, CallingSearchSpace, Geolocation }; 
+    public enum SectionType { Config, Folder, AccessGroup, AgentGroup, VirtualQueue, GroupOfQueue, Place, TransactionList, Person, RoutingPoint, ERP, Skill, CCPulse, Host, CSProxy, Options, Erreur,
+        PhysicalLocation, CallingSearchSpace, Geolocation, LineGroup, HuntList, HuntPilot, TranslationPattern, CallingPartyTransformationPattern, CalledPartyTransformationPattern, Location,
+        DeviceMobilityInfo, Region, DevicePool, Line, CTIRoutePoint }; 
 
     public class Section
     {
@@ -28,6 +30,15 @@ namespace CreateSite
         public SectionType Type { get; set; }
 
         public List<CleValeur> Options { get; set; }
+
+        public string getOption(string cle)
+        {
+            CleValeur cv = Options.Find(c => c.Cle.Equals(cle));
+            if (cv == null)
+                return "";
+            else
+                return cv.Valeur;
+        }
 
         public Section(string name)
         {
@@ -43,9 +54,10 @@ namespace CreateSite
             }
 
             // Section Cisco
-            if (Name.Equals("PHYSICAL_LOCATION"))
+            if ((Name.Length >= 3) && (Name.Substring(0, 3).Equals("PHY")))
             {
                 Type = SectionType.PhysicalLocation;
+                Name = name.Substring(4, name.Length - 4);
                 return;
             }
 
@@ -59,6 +71,90 @@ namespace CreateSite
             if ((Name.Length >= 3) && (Name.Substring(0, 3).Equals("GEO")))
             {
                 Type = SectionType.Geolocation;
+                Name = name.Substring(4, name.Length - 4);
+                return;
+            }
+
+            if ((Name.Length >= 2) && (Name.Substring(0, 2).Equals("LG")))
+            {
+                Type = SectionType.LineGroup;
+                Name = name.Substring(3, name.Length - 3);
+                return;
+            }
+
+            if ((Name.Length >= 2) && (Name.Substring(0, 2).Equals("HL")))
+            {
+                Type = SectionType.HuntList;
+                Name = name.Substring(3, name.Length - 3);
+                return;
+            }
+
+            if ((Name.Length >= 2) && (Name.Substring(0, 2).Equals("HP")))
+            {
+                Type = SectionType.HuntPilot;
+                Name = name.Substring(3, name.Length - 3);
+                return;
+            }
+
+            if ((Name.Length >= 2) && (Name.Substring(0, 2).Equals("TP")))
+            {
+                Type = SectionType.TranslationPattern;
+                Name = name.Substring(3, name.Length - 3);
+                return;
+            }
+
+            if ((Name.Length >= 4) && (Name.Substring(0, 4).Equals("CALG")))
+            {
+                Type = SectionType.CallingPartyTransformationPattern;
+                Name = name.Substring(5, name.Length - 5);
+                return;
+            }
+
+            if ((Name.Length >= 4) && (Name.Substring(0, 4).Equals("CALD")))
+            {
+                Type = SectionType.CalledPartyTransformationPattern;
+                Name = name.Substring(5, name.Length - 5);
+                return;
+            }
+
+            if ((Name.Length >= 3) && (Name.Substring(0, 3).Equals("LOC")))
+            {
+                Type = SectionType.Location;
+                Name = name.Substring(4, name.Length - 4);
+                return;
+            }
+
+            if ((Name.Length >= 3) && (Name.Substring(0, 3).Equals("DMI")))
+            {
+                Type = SectionType.DeviceMobilityInfo;
+                Name = name.Substring(4, name.Length - 4);
+                return;
+            }
+
+            if ((Name.Length >= 3) && (Name.Substring(0, 3).Equals("REG")))
+            {
+                Type = SectionType.Region;
+                Name = name.Substring(4, name.Length - 4);
+                return;
+            }
+
+            if ((Name.Length >= 2) && (Name.Substring(0, 2).Equals("DP")))
+            {
+                Type = SectionType.DevicePool;
+                Name = name.Substring(3, name.Length - 3);
+                return;
+            }
+
+            if ((Name.Length >= 4) && (Name.Substring(0, 4).Equals("LINE")))
+            {
+                Type = SectionType.Line;
+                Name = name.Substring(5, name.Length - 5);
+                return;
+            }
+
+            if ((Name.Length >= 3) && (Name.Substring(0, 3).Equals("CTI")))
+            {
+                Type = SectionType.CTIRoutePoint;
                 Name = name.Substring(4, name.Length - 4);
                 return;
             }

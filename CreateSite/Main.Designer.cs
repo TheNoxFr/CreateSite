@@ -108,6 +108,7 @@
             this.btnGenesys = new System.Windows.Forms.Button();
             this.btnCisco = new System.Windows.Forms.Button();
             this.tabPageCisco = new System.Windows.Forms.TabPage();
+            this.BtnCiscoCreer = new System.Windows.Forms.Button();
             this.BtnCiscoVerifExiste = new System.Windows.Forms.Button();
             this.treeCisco = new System.Windows.Forms.TreeView();
             this.lblCiscoNumPrefixe = new System.Windows.Forms.Label();
@@ -117,7 +118,7 @@
             this.lblCiscoCodeUGS = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.tabPageGenesys = new System.Windows.Forms.TabPage();
-            this.BtnCiscoCreer = new System.Windows.Forms.Button();
+            this.rtCiscoLog = new System.Windows.Forms.RichTextBox();
             this.tabCtrl.SuspendLayout();
             this.tabGenesys.SuspendLayout();
             this.tabControlGeneral.SuspendLayout();
@@ -961,6 +962,7 @@
             // 
             // tabPageCisco
             // 
+            this.tabPageCisco.Controls.Add(this.rtCiscoLog);
             this.tabPageCisco.Controls.Add(this.BtnCiscoCreer);
             this.tabPageCisco.Controls.Add(this.BtnCiscoVerifExiste);
             this.tabPageCisco.Controls.Add(this.treeCisco);
@@ -977,6 +979,16 @@
             this.tabPageCisco.TabIndex = 1;
             this.tabPageCisco.Text = "Cisco";
             this.tabPageCisco.UseVisualStyleBackColor = true;
+            // 
+            // BtnCiscoCreer
+            // 
+            this.BtnCiscoCreer.Location = new System.Drawing.Point(534, 21);
+            this.BtnCiscoCreer.Name = "BtnCiscoCreer";
+            this.BtnCiscoCreer.Size = new System.Drawing.Size(125, 59);
+            this.BtnCiscoCreer.TabIndex = 8;
+            this.BtnCiscoCreer.Text = "Créer";
+            this.BtnCiscoCreer.UseVisualStyleBackColor = true;
+            this.BtnCiscoCreer.Click += new System.EventHandler(this.BtnCiscoCreer_Click);
             // 
             // BtnCiscoVerifExiste
             // 
@@ -995,6 +1007,7 @@
             this.treeCisco.Name = "treeCisco";
             this.treeCisco.Size = new System.Drawing.Size(272, 345);
             this.treeCisco.TabIndex = 6;
+            this.treeCisco.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeCisco_AfterCheck);
             // 
             // lblCiscoNumPrefixe
             // 
@@ -1059,15 +1072,14 @@
             this.tabPageGenesys.Text = "Genesys";
             this.tabPageGenesys.UseVisualStyleBackColor = true;
             // 
-            // BtnCiscoCreer
+            // rtCiscoLog
             // 
-            this.BtnCiscoCreer.Location = new System.Drawing.Point(534, 21);
-            this.BtnCiscoCreer.Name = "BtnCiscoCreer";
-            this.BtnCiscoCreer.Size = new System.Drawing.Size(125, 59);
-            this.BtnCiscoCreer.TabIndex = 8;
-            this.BtnCiscoCreer.Text = "Créer";
-            this.BtnCiscoCreer.UseVisualStyleBackColor = true;
-            this.BtnCiscoCreer.Click += new System.EventHandler(this.BtnCiscoCreer_Click);
+            this.rtCiscoLog.Location = new System.Drawing.Point(350, 126);
+            this.rtCiscoLog.Name = "rtCiscoLog";
+            this.rtCiscoLog.ReadOnly = true;
+            this.rtCiscoLog.Size = new System.Drawing.Size(525, 345);
+            this.rtCiscoLog.TabIndex = 9;
+            this.rtCiscoLog.Text = "";
             // 
             // Main
             // 
@@ -1190,6 +1202,7 @@
         private System.Windows.Forms.TreeView treeCisco;
         private System.Windows.Forms.Button BtnCiscoVerifExiste;
         private System.Windows.Forms.Button BtnCiscoCreer;
+        private System.Windows.Forms.RichTextBox rtCiscoLog;
     }
 }
 
