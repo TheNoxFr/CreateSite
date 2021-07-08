@@ -28,20 +28,14 @@ namespace CreateSite
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            client = new AXLAPIService();
-
-            client.Url = Url;
-            client.Credentials = new NetworkCredential(Login, Password);
+            client = new AXLAPIService { Url = Url, Credentials = new NetworkCredential(Login, Password) };
         }
 
         public bool AddPartition(string name, string description)
         {
             bool result = true;
 
-            AddRoutePartitionReq req = new AddRoutePartitionReq();
-            req.routePartition = new XRoutePartition();
-            req.routePartition.name = name;
-            req.routePartition.description = description;
+            AddRoutePartitionReq req = new AddRoutePartitionReq { routePartition = new XRoutePartition { name = name, description = description } };
 
             StandardResponse res = client.addRoutePartition(req);
 
@@ -586,7 +580,7 @@ namespace CreateSite
             return res;
         }
 
-        public string AddRegion(string name, string codecpreflist)
+        public string AddRegion(string name, string codecpreflist, string audiobitrate, string videobitrate, string immersivevideobitrate)
         {
             string result = "";
 
@@ -602,6 +596,9 @@ namespace CreateSite
                 req.region.relatedRegions[idx] = new XRegionRelationship();
                 req.region.relatedRegions[idx].regionName = new XFkType { Value = region.name };
                 req.region.relatedRegions[idx].codecPreference = new XFkType { Value = codecpreflist };
+                req.region.relatedRegions[idx].bandwidth = audiobitrate;
+                req.region.relatedRegions[idx].videoBandwidth = videobitrate;
+                req.region.relatedRegions[idx].immersiveVideoBandwidth = immersivevideobitrate;
                 idx++;
             }
 
@@ -817,7 +814,7 @@ namespace CreateSite
             req.transPattern.blockEnable = "false";
             req.transPattern.usage = "Translation";
             req.transPattern.patternUrgency = "true";
-            req.transPattern.provideOutsideDialtone = "1";
+            //req.transPattern.provideOutsideDialtone = "1";  / A priori jamais nécessaire
             req.transPattern.callingSearchSpaceName = new XFkType { Value = css };
             req.transPattern.calledPartyTransformationMask = calledpartymask;
             if (!callingpartymask.Equals(""))

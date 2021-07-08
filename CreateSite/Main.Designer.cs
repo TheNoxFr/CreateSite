@@ -111,14 +111,14 @@
             this.BtnCiscoCreer = new System.Windows.Forms.Button();
             this.BtnCiscoVerifExiste = new System.Windows.Forms.Button();
             this.treeCisco = new System.Windows.Forms.TreeView();
-            this.lblCiscoNumPrefixe = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.lblCiscoVille = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.lblCiscoCodeUGS = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.tabPageGenesys = new System.Windows.Forms.TabPage();
             this.rtCiscoLog = new System.Windows.Forms.RichTextBox();
+            this.rtCiscoConfig = new System.Windows.Forms.RichTextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.tabCtrl.SuspendLayout();
             this.tabGenesys.SuspendLayout();
             this.tabControlGeneral.SuspendLayout();
@@ -926,7 +926,7 @@
             this.tabControlGeneral.Location = new System.Drawing.Point(12, 12);
             this.tabControlGeneral.Name = "tabControlGeneral";
             this.tabControlGeneral.SelectedIndex = 0;
-            this.tabControlGeneral.Size = new System.Drawing.Size(926, 581);
+            this.tabControlGeneral.Size = new System.Drawing.Size(1368, 581);
             this.tabControlGeneral.TabIndex = 10;
             // 
             // tabPageChoix
@@ -962,106 +962,78 @@
             // 
             // tabPageCisco
             // 
+            this.tabPageCisco.BackColor = System.Drawing.Color.DimGray;
+            this.tabPageCisco.Controls.Add(this.label6);
+            this.tabPageCisco.Controls.Add(this.label5);
+            this.tabPageCisco.Controls.Add(this.label4);
+            this.tabPageCisco.Controls.Add(this.rtCiscoConfig);
             this.tabPageCisco.Controls.Add(this.rtCiscoLog);
             this.tabPageCisco.Controls.Add(this.BtnCiscoCreer);
             this.tabPageCisco.Controls.Add(this.BtnCiscoVerifExiste);
             this.tabPageCisco.Controls.Add(this.treeCisco);
-            this.tabPageCisco.Controls.Add(this.lblCiscoNumPrefixe);
-            this.tabPageCisco.Controls.Add(this.label7);
             this.tabPageCisco.Controls.Add(this.lblCiscoVille);
-            this.tabPageCisco.Controls.Add(this.label6);
             this.tabPageCisco.Controls.Add(this.lblCiscoCodeUGS);
-            this.tabPageCisco.Controls.Add(this.label4);
             this.tabPageCisco.Location = new System.Drawing.Point(4, 22);
             this.tabPageCisco.Name = "tabPageCisco";
             this.tabPageCisco.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCisco.Size = new System.Drawing.Size(918, 555);
+            this.tabPageCisco.Size = new System.Drawing.Size(1360, 555);
             this.tabPageCisco.TabIndex = 1;
             this.tabPageCisco.Text = "Cisco";
-            this.tabPageCisco.UseVisualStyleBackColor = true;
             // 
             // BtnCiscoCreer
             // 
+            this.BtnCiscoCreer.Enabled = false;
             this.BtnCiscoCreer.Location = new System.Drawing.Point(534, 21);
             this.BtnCiscoCreer.Name = "BtnCiscoCreer";
             this.BtnCiscoCreer.Size = new System.Drawing.Size(125, 59);
             this.BtnCiscoCreer.TabIndex = 8;
-            this.BtnCiscoCreer.Text = "Créer";
+            this.BtnCiscoCreer.Text = "Créer objets";
             this.BtnCiscoCreer.UseVisualStyleBackColor = true;
             this.BtnCiscoCreer.Click += new System.EventHandler(this.BtnCiscoCreer_Click);
             // 
             // BtnCiscoVerifExiste
             // 
+            this.BtnCiscoVerifExiste.BackColor = System.Drawing.Color.Transparent;
+            this.BtnCiscoVerifExiste.ForeColor = System.Drawing.SystemColors.ControlText;
             this.BtnCiscoVerifExiste.Location = new System.Drawing.Point(353, 18);
             this.BtnCiscoVerifExiste.Name = "BtnCiscoVerifExiste";
             this.BtnCiscoVerifExiste.Size = new System.Drawing.Size(125, 59);
             this.BtnCiscoVerifExiste.TabIndex = 7;
-            this.BtnCiscoVerifExiste.Text = "Existe ?";
-            this.BtnCiscoVerifExiste.UseVisualStyleBackColor = true;
+            this.BtnCiscoVerifExiste.Text = "Vérif existance";
+            this.BtnCiscoVerifExiste.UseVisualStyleBackColor = false;
             this.BtnCiscoVerifExiste.Click += new System.EventHandler(this.BtnCiscoVerifExiste_Click);
             // 
             // treeCisco
             // 
+            this.treeCisco.BackColor = System.Drawing.Color.Silver;
             this.treeCisco.CheckBoxes = true;
-            this.treeCisco.Location = new System.Drawing.Point(21, 126);
+            this.treeCisco.Location = new System.Drawing.Point(353, 111);
             this.treeCisco.Name = "treeCisco";
-            this.treeCisco.Size = new System.Drawing.Size(272, 345);
+            this.treeCisco.Size = new System.Drawing.Size(366, 427);
             this.treeCisco.TabIndex = 6;
             this.treeCisco.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeCisco_AfterCheck);
-            // 
-            // lblCiscoNumPrefixe
-            // 
-            this.lblCiscoNumPrefixe.AutoSize = true;
-            this.lblCiscoNumPrefixe.Location = new System.Drawing.Point(221, 18);
-            this.lblCiscoNumPrefixe.Name = "lblCiscoNumPrefixe";
-            this.lblCiscoNumPrefixe.Size = new System.Drawing.Size(16, 13);
-            this.lblCiscoNumPrefixe.TabIndex = 5;
-            this.lblCiscoNumPrefixe.Text = "...";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(152, 18);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(69, 13);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "Num préfixe :";
             // 
             // lblCiscoVille
             // 
             this.lblCiscoVille.AutoSize = true;
-            this.lblCiscoVille.Location = new System.Drawing.Point(90, 44);
+            this.lblCiscoVille.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCiscoVille.ForeColor = System.Drawing.Color.Blue;
+            this.lblCiscoVille.Location = new System.Drawing.Point(115, 18);
             this.lblCiscoVille.Name = "lblCiscoVille";
-            this.lblCiscoVille.Size = new System.Drawing.Size(16, 13);
+            this.lblCiscoVille.Size = new System.Drawing.Size(47, 37);
             this.lblCiscoVille.TabIndex = 3;
             this.lblCiscoVille.Text = "...";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(21, 44);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(32, 13);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "Ville :";
             // 
             // lblCiscoCodeUGS
             // 
             this.lblCiscoCodeUGS.AutoSize = true;
-            this.lblCiscoCodeUGS.Location = new System.Drawing.Point(90, 18);
+            this.lblCiscoCodeUGS.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCiscoCodeUGS.ForeColor = System.Drawing.Color.Blue;
+            this.lblCiscoCodeUGS.Location = new System.Drawing.Point(19, 18);
             this.lblCiscoCodeUGS.Name = "lblCiscoCodeUGS";
-            this.lblCiscoCodeUGS.Size = new System.Drawing.Size(16, 13);
+            this.lblCiscoCodeUGS.Size = new System.Drawing.Size(47, 37);
             this.lblCiscoCodeUGS.TabIndex = 1;
             this.lblCiscoCodeUGS.Text = "...";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(21, 18);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(64, 13);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Code UGS :";
             // 
             // tabPageGenesys
             // 
@@ -1074,18 +1046,55 @@
             // 
             // rtCiscoLog
             // 
-            this.rtCiscoLog.Location = new System.Drawing.Point(350, 126);
+            this.rtCiscoLog.BackColor = System.Drawing.Color.Silver;
+            this.rtCiscoLog.Location = new System.Drawing.Point(780, 111);
             this.rtCiscoLog.Name = "rtCiscoLog";
             this.rtCiscoLog.ReadOnly = true;
-            this.rtCiscoLog.Size = new System.Drawing.Size(525, 345);
+            this.rtCiscoLog.Size = new System.Drawing.Size(525, 427);
             this.rtCiscoLog.TabIndex = 9;
             this.rtCiscoLog.Text = "";
+            // 
+            // rtCiscoConfig
+            // 
+            this.rtCiscoConfig.BackColor = System.Drawing.Color.Silver;
+            this.rtCiscoConfig.Location = new System.Drawing.Point(24, 111);
+            this.rtCiscoConfig.Name = "rtCiscoConfig";
+            this.rtCiscoConfig.Size = new System.Drawing.Size(273, 427);
+            this.rtCiscoConfig.TabIndex = 10;
+            this.rtCiscoConfig.Text = "";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(23, 95);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(90, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Config Spécifique";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(361, 95);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(37, 13);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Objets";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(794, 95);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(30, 13);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Logs";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(954, 840);
+            this.ClientSize = new System.Drawing.Size(1392, 840);
             this.Controls.Add(this.tabControlGeneral);
             this.Controls.Add(this.BtnNEXT);
             this.Controls.Add(this.tabCtrl);
@@ -1193,16 +1202,16 @@
         private System.Windows.Forms.Button btnCisco;
         private System.Windows.Forms.TabPage tabPageCisco;
         private System.Windows.Forms.TabPage tabPageGenesys;
-        private System.Windows.Forms.Label lblCiscoNumPrefixe;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label lblCiscoVille;
-        private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lblCiscoCodeUGS;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TreeView treeCisco;
         private System.Windows.Forms.Button BtnCiscoVerifExiste;
         private System.Windows.Forms.Button BtnCiscoCreer;
         private System.Windows.Forms.RichTextBox rtCiscoLog;
+        private System.Windows.Forms.RichTextBox rtCiscoConfig;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
     }
 }
 

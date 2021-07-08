@@ -687,15 +687,26 @@ namespace CreateSite
             {
                 lblCiscoCodeUGS.Text = config.getOption("Site");
                 lblCiscoVille.Text = config.getOption("Nom");
-                lblCiscoNumPrefixe.Text = config.getOption("PlanNum");
 
             }
             catch (Exception)
             {
-                // Les infos de base sont non présentes (à bloquer via une pré-vérif ?
+                // Les infos de base sont non présentes (à bloquer via une pré-vérif) ?
             }
 
             List<Section> liste;
+
+            // Ajout paramètres config
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Config);
+            foreach(CleValeur cv in liste[0].Options)
+            {
+                rtCiscoConfig.AppendText(cv.Cle + " : ");
+                rtCiscoConfig.SelectionStart = rtCiscoConfig.TextLength;
+                rtCiscoConfig.SelectionLength = 0;
+                rtCiscoConfig.SelectionFont = new Font(rtCiscoConfig.Font, FontStyle.Bold);
+                rtCiscoConfig.AppendText(cv.Valeur);
+                rtCiscoConfig.AppendText("\r\n");
+            }
 
             // Ajout Physical Location
             liste = ini.Sections.FindAll(s => s.Type == SectionType.PhysicalLocation);
@@ -891,7 +902,7 @@ namespace CreateSite
                     if (ph != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -908,7 +919,7 @@ namespace CreateSite
                     if (lo != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -925,7 +936,7 @@ namespace CreateSite
                     if (ge != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -942,7 +953,7 @@ namespace CreateSite
                     if (l != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -959,7 +970,7 @@ namespace CreateSite
                     if (h != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -976,7 +987,7 @@ namespace CreateSite
                     if (h != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " ALL_Interne_P");
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -989,11 +1000,13 @@ namespace CreateSite
                 foreach (TreeNode node in tp.Nodes)
                 {
                     string numero = node.Text;
-                    GetTransPatternRes t = cisco.GetTranslationPattern(numero, "ALL_Interne_P");
+                    Section section = ini.Sections.Find(s => s.Type == SectionType.TranslationPattern && s.Name.Equals(numero));
+                    string partition = section.getOption("Partition");
+                    GetTransPatternRes t = cisco.GetTranslationPattern(numero, partition);
                     if (t != null) // existe déjà
                     {
-                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " ALL_Interne_P");
-                        node.BackColor = Color.Red;
+                        Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " " + partition);
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -1012,7 +1025,7 @@ namespace CreateSite
                     if (c != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " " + partition);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -1031,7 +1044,7 @@ namespace CreateSite
                     if (c != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " " + partition);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -1048,7 +1061,7 @@ namespace CreateSite
                     if (d != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -1065,7 +1078,7 @@ namespace CreateSite
                     if (r != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -1082,7 +1095,7 @@ namespace CreateSite
                     if (d != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -1101,7 +1114,7 @@ namespace CreateSite
                     if (l != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " " + partition);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
@@ -1118,11 +1131,12 @@ namespace CreateSite
                     if (c != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + name);
-                        node.BackColor = Color.Red;
+                        node.ForeColor = Color.Red;
                     }
                 }
             }
 
+            BtnCiscoCreer.Enabled = true;
 
         }
 
@@ -1297,15 +1311,17 @@ namespace CreateSite
                         string description = section.getOption("Description");
                         string calledmask = section.getOption("CalledMask");
                         string callingmask = section.getOption("CallingMask");
-                        string res = cisco.AddTranslationPattern(numero, "ALL_Interne_P", description, "SYS_Technique_CSS", calledmask, callingmask);
+                        string partition = section.getOption("Partition");
+                        string css = section.getOption("CSS");
+                        string res = cisco.AddTranslationPattern(numero, partition, description, css, calledmask, callingmask);
                         if (!res.Equals(""))
                         {
-                            Trace(Target.Cisco, TraceLevel.ERROR, numero + " ALL_Interne_P" + " " + res);
+                            Trace(Target.Cisco, TraceLevel.ERROR, numero + " " + partition + " " + res);
                             node.BackColor = Color.Blue;
                         }
                         else
                         {
-                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + numero + " ALL_Interne_P");
+                            Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + numero + " " + partition);
                         }
                     }
                 }
@@ -1407,7 +1423,10 @@ namespace CreateSite
                         string name = node.Text;
                         Section section = ini.Sections.Find(s => s.Type == SectionType.Region && s.Name.Equals(name));
                         string codeclist = section.getOption("CodecList");
-                        string res = cisco.AddRegion(name, codeclist);
+                        string audiobitrate = section.getOption("AudioBitRate");
+                        string videobitrate = section.getOption("VideoBitRate");
+                        string immersivevideobitrate = section.getOption("ImmersiveVideoBitRate");
+                        string res = cisco.AddRegion(name, codeclist, audiobitrate, videobitrate, immersivevideobitrate);
                         if (!res.Equals(""))
                         {
                             Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
@@ -1593,7 +1612,7 @@ namespace CreateSite
                     richText.SelectionColor = Color.Green;
                     break;
                 case TraceLevel.WARNING:
-                    richText.SelectionColor = Color.Orange;
+                    richText.SelectionColor = Color.DarkOrange;
                     break;
                 case TraceLevel.ERROR:
                     richText.SelectionColor = Color.Red;
