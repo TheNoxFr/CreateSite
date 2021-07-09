@@ -32,7 +32,6 @@
             this.txtGenesysPassword = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.BtnGO = new System.Windows.Forms.Button();
             this.tabCtrl = new System.Windows.Forms.TabControl();
             this.tabGenesys = new System.Windows.Forms.TabPage();
@@ -102,28 +101,20 @@
             this.lblFolder = new System.Windows.Forms.Label();
             this.lblconfig = new System.Windows.Forms.Label();
             this.tabCisco = new System.Windows.Forms.TabPage();
-            this.BtnNEXT = new System.Windows.Forms.Button();
-            this.tabControlGeneral = new System.Windows.Forms.TabControl();
-            this.tabPageChoix = new System.Windows.Forms.TabPage();
-            this.btnGenesys = new System.Windows.Forms.Button();
-            this.btnCisco = new System.Windows.Forms.Button();
-            this.tabPageCisco = new System.Windows.Forms.TabPage();
-            this.BtnCiscoCreer = new System.Windows.Forms.Button();
-            this.BtnCiscoVerifExiste = new System.Windows.Forms.Button();
-            this.treeCisco = new System.Windows.Forms.TreeView();
-            this.lblCiscoVille = new System.Windows.Forms.Label();
-            this.lblCiscoCodeUGS = new System.Windows.Forms.Label();
-            this.tabPageGenesys = new System.Windows.Forms.TabPage();
-            this.rtCiscoLog = new System.Windows.Forms.RichTextBox();
-            this.rtCiscoConfig = new System.Windows.Forms.RichTextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.BtnCiscoFile = new System.Windows.Forms.Button();
+            this.BtnGenesysFile = new System.Windows.Forms.Button();
+            this.rtConfig = new System.Windows.Forms.RichTextBox();
+            this.treeObjects = new System.Windows.Forms.TreeView();
+            this.rtLog = new System.Windows.Forms.RichTextBox();
+            this.lblCodeUGS = new System.Windows.Forms.Label();
+            this.lblVille = new System.Windows.Forms.Label();
+            this.BtnVerifExiste = new System.Windows.Forms.Button();
+            this.BtnCreer = new System.Windows.Forms.Button();
             this.tabCtrl.SuspendLayout();
             this.tabGenesys.SuspendLayout();
-            this.tabControlGeneral.SuspendLayout();
-            this.tabPageChoix.SuspendLayout();
-            this.tabPageCisco.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtGenesysLogin
@@ -160,15 +151,6 @@
             this.label2.Size = new System.Drawing.Size(59, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "Password :";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(184, 599);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Genesys";
             // 
             // BtnGO
             // 
@@ -908,198 +890,146 @@
             this.tabCisco.Text = "Cisco";
             this.tabCisco.UseVisualStyleBackColor = true;
             // 
-            // BtnNEXT
+            // label6
             // 
-            this.BtnNEXT.Location = new System.Drawing.Point(715, 599);
-            this.BtnNEXT.Name = "BtnNEXT";
-            this.BtnNEXT.Size = new System.Drawing.Size(132, 51);
-            this.BtnNEXT.TabIndex = 7;
-            this.BtnNEXT.Text = "NEXT";
-            this.BtnNEXT.UseVisualStyleBackColor = true;
-            this.BtnNEXT.Click += new System.EventHandler(this.BtnNEXT_Click);
-            // 
-            // tabControlGeneral
-            // 
-            this.tabControlGeneral.Controls.Add(this.tabPageChoix);
-            this.tabControlGeneral.Controls.Add(this.tabPageCisco);
-            this.tabControlGeneral.Controls.Add(this.tabPageGenesys);
-            this.tabControlGeneral.Location = new System.Drawing.Point(12, 12);
-            this.tabControlGeneral.Name = "tabControlGeneral";
-            this.tabControlGeneral.SelectedIndex = 0;
-            this.tabControlGeneral.Size = new System.Drawing.Size(1368, 581);
-            this.tabControlGeneral.TabIndex = 10;
-            // 
-            // tabPageChoix
-            // 
-            this.tabPageChoix.Controls.Add(this.btnGenesys);
-            this.tabPageChoix.Controls.Add(this.btnCisco);
-            this.tabPageChoix.Location = new System.Drawing.Point(4, 22);
-            this.tabPageChoix.Name = "tabPageChoix";
-            this.tabPageChoix.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageChoix.Size = new System.Drawing.Size(918, 555);
-            this.tabPageChoix.TabIndex = 0;
-            this.tabPageChoix.Text = "Choix Cible";
-            this.tabPageChoix.UseVisualStyleBackColor = true;
-            // 
-            // btnGenesys
-            // 
-            this.btnGenesys.Location = new System.Drawing.Point(516, 210);
-            this.btnGenesys.Name = "btnGenesys";
-            this.btnGenesys.Size = new System.Drawing.Size(201, 100);
-            this.btnGenesys.TabIndex = 11;
-            this.btnGenesys.Text = "Genesys";
-            this.btnGenesys.UseVisualStyleBackColor = true;
-            // 
-            // btnCisco
-            // 
-            this.btnCisco.Location = new System.Drawing.Point(180, 210);
-            this.btnCisco.Name = "btnCisco";
-            this.btnCisco.Size = new System.Drawing.Size(201, 100);
-            this.btnCisco.TabIndex = 10;
-            this.btnCisco.Text = "Cisco";
-            this.btnCisco.UseVisualStyleBackColor = true;
-            this.btnCisco.Click += new System.EventHandler(this.BtnCisco_Click);
-            // 
-            // tabPageCisco
-            // 
-            this.tabPageCisco.BackColor = System.Drawing.Color.DimGray;
-            this.tabPageCisco.Controls.Add(this.label6);
-            this.tabPageCisco.Controls.Add(this.label5);
-            this.tabPageCisco.Controls.Add(this.label4);
-            this.tabPageCisco.Controls.Add(this.rtCiscoConfig);
-            this.tabPageCisco.Controls.Add(this.rtCiscoLog);
-            this.tabPageCisco.Controls.Add(this.BtnCiscoCreer);
-            this.tabPageCisco.Controls.Add(this.BtnCiscoVerifExiste);
-            this.tabPageCisco.Controls.Add(this.treeCisco);
-            this.tabPageCisco.Controls.Add(this.lblCiscoVille);
-            this.tabPageCisco.Controls.Add(this.lblCiscoCodeUGS);
-            this.tabPageCisco.Location = new System.Drawing.Point(4, 22);
-            this.tabPageCisco.Name = "tabPageCisco";
-            this.tabPageCisco.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCisco.Size = new System.Drawing.Size(1360, 555);
-            this.tabPageCisco.TabIndex = 1;
-            this.tabPageCisco.Text = "Cisco";
-            // 
-            // BtnCiscoCreer
-            // 
-            this.BtnCiscoCreer.Enabled = false;
-            this.BtnCiscoCreer.Location = new System.Drawing.Point(534, 21);
-            this.BtnCiscoCreer.Name = "BtnCiscoCreer";
-            this.BtnCiscoCreer.Size = new System.Drawing.Size(125, 59);
-            this.BtnCiscoCreer.TabIndex = 8;
-            this.BtnCiscoCreer.Text = "Créer objets";
-            this.BtnCiscoCreer.UseVisualStyleBackColor = true;
-            this.BtnCiscoCreer.Click += new System.EventHandler(this.BtnCiscoCreer_Click);
-            // 
-            // BtnCiscoVerifExiste
-            // 
-            this.BtnCiscoVerifExiste.BackColor = System.Drawing.Color.Transparent;
-            this.BtnCiscoVerifExiste.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.BtnCiscoVerifExiste.Location = new System.Drawing.Point(353, 18);
-            this.BtnCiscoVerifExiste.Name = "BtnCiscoVerifExiste";
-            this.BtnCiscoVerifExiste.Size = new System.Drawing.Size(125, 59);
-            this.BtnCiscoVerifExiste.TabIndex = 7;
-            this.BtnCiscoVerifExiste.Text = "Vérif existance";
-            this.BtnCiscoVerifExiste.UseVisualStyleBackColor = false;
-            this.BtnCiscoVerifExiste.Click += new System.EventHandler(this.BtnCiscoVerifExiste_Click);
-            // 
-            // treeCisco
-            // 
-            this.treeCisco.BackColor = System.Drawing.Color.Silver;
-            this.treeCisco.CheckBoxes = true;
-            this.treeCisco.Location = new System.Drawing.Point(353, 111);
-            this.treeCisco.Name = "treeCisco";
-            this.treeCisco.Size = new System.Drawing.Size(366, 427);
-            this.treeCisco.TabIndex = 6;
-            this.treeCisco.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeCisco_AfterCheck);
-            // 
-            // lblCiscoVille
-            // 
-            this.lblCiscoVille.AutoSize = true;
-            this.lblCiscoVille.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCiscoVille.ForeColor = System.Drawing.Color.Blue;
-            this.lblCiscoVille.Location = new System.Drawing.Point(115, 18);
-            this.lblCiscoVille.Name = "lblCiscoVille";
-            this.lblCiscoVille.Size = new System.Drawing.Size(47, 37);
-            this.lblCiscoVille.TabIndex = 3;
-            this.lblCiscoVille.Text = "...";
-            // 
-            // lblCiscoCodeUGS
-            // 
-            this.lblCiscoCodeUGS.AutoSize = true;
-            this.lblCiscoCodeUGS.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCiscoCodeUGS.ForeColor = System.Drawing.Color.Blue;
-            this.lblCiscoCodeUGS.Location = new System.Drawing.Point(19, 18);
-            this.lblCiscoCodeUGS.Name = "lblCiscoCodeUGS";
-            this.lblCiscoCodeUGS.Size = new System.Drawing.Size(47, 37);
-            this.lblCiscoCodeUGS.TabIndex = 1;
-            this.lblCiscoCodeUGS.Text = "...";
-            // 
-            // tabPageGenesys
-            // 
-            this.tabPageGenesys.Location = new System.Drawing.Point(4, 22);
-            this.tabPageGenesys.Name = "tabPageGenesys";
-            this.tabPageGenesys.Size = new System.Drawing.Size(918, 555);
-            this.tabPageGenesys.TabIndex = 2;
-            this.tabPageGenesys.Text = "Genesys";
-            this.tabPageGenesys.UseVisualStyleBackColor = true;
-            // 
-            // rtCiscoLog
-            // 
-            this.rtCiscoLog.BackColor = System.Drawing.Color.Silver;
-            this.rtCiscoLog.Location = new System.Drawing.Point(780, 111);
-            this.rtCiscoLog.Name = "rtCiscoLog";
-            this.rtCiscoLog.ReadOnly = true;
-            this.rtCiscoLog.Size = new System.Drawing.Size(525, 427);
-            this.rtCiscoLog.TabIndex = 9;
-            this.rtCiscoLog.Text = "";
-            // 
-            // rtCiscoConfig
-            // 
-            this.rtCiscoConfig.BackColor = System.Drawing.Color.Silver;
-            this.rtCiscoConfig.Location = new System.Drawing.Point(24, 111);
-            this.rtCiscoConfig.Name = "rtCiscoConfig";
-            this.rtCiscoConfig.Size = new System.Drawing.Size(273, 427);
-            this.rtCiscoConfig.TabIndex = 10;
-            this.rtCiscoConfig.Text = "";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 95);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 13);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "Config Spécifique";
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(814, 94);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(30, 13);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Logs";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(361, 95);
+            this.label5.Location = new System.Drawing.Point(353, 94);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(37, 13);
             this.label5.TabIndex = 12;
             this.label5.Text = "Objets";
             // 
-            // label6
+            // label4
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(794, 95);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(30, 13);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "Logs";
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(31, 89);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(90, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Config Spécifique";
+            // 
+            // BtnCiscoFile
+            // 
+            this.BtnCiscoFile.Location = new System.Drawing.Point(279, 543);
+            this.BtnCiscoFile.Name = "BtnCiscoFile";
+            this.BtnCiscoFile.Size = new System.Drawing.Size(201, 100);
+            this.BtnCiscoFile.TabIndex = 11;
+            this.BtnCiscoFile.Text = "Cisco";
+            this.BtnCiscoFile.UseVisualStyleBackColor = true;
+            this.BtnCiscoFile.Click += new System.EventHandler(this.BtnCiscoFile_Click);
+            // 
+            // BtnGenesysFile
+            // 
+            this.BtnGenesysFile.Location = new System.Drawing.Point(631, 543);
+            this.BtnGenesysFile.Name = "BtnGenesysFile";
+            this.BtnGenesysFile.Size = new System.Drawing.Size(201, 100);
+            this.BtnGenesysFile.TabIndex = 12;
+            this.BtnGenesysFile.Text = "Genesys";
+            this.BtnGenesysFile.UseVisualStyleBackColor = true;
+            this.BtnGenesysFile.Click += new System.EventHandler(this.BtnGenesysFile_Click);
+            // 
+            // rtConfig
+            // 
+            this.rtConfig.BackColor = System.Drawing.Color.Silver;
+            this.rtConfig.Location = new System.Drawing.Point(21, 110);
+            this.rtConfig.Name = "rtConfig";
+            this.rtConfig.Size = new System.Drawing.Size(273, 427);
+            this.rtConfig.TabIndex = 13;
+            this.rtConfig.Text = "";
+            // 
+            // treeObjects
+            // 
+            this.treeObjects.BackColor = System.Drawing.Color.Silver;
+            this.treeObjects.CheckBoxes = true;
+            this.treeObjects.Location = new System.Drawing.Point(330, 110);
+            this.treeObjects.Name = "treeObjects";
+            this.treeObjects.Size = new System.Drawing.Size(429, 427);
+            this.treeObjects.TabIndex = 14;
+            this.treeObjects.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeObjects_AfterCheck);
+            // 
+            // rtLog
+            // 
+            this.rtLog.BackColor = System.Drawing.Color.Silver;
+            this.rtLog.Location = new System.Drawing.Point(806, 110);
+            this.rtLog.Name = "rtLog";
+            this.rtLog.ReadOnly = true;
+            this.rtLog.Size = new System.Drawing.Size(525, 427);
+            this.rtLog.TabIndex = 15;
+            this.rtLog.Text = "";
+            // 
+            // lblCodeUGS
+            // 
+            this.lblCodeUGS.AutoSize = true;
+            this.lblCodeUGS.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCodeUGS.ForeColor = System.Drawing.Color.Blue;
+            this.lblCodeUGS.Location = new System.Drawing.Point(43, 25);
+            this.lblCodeUGS.Name = "lblCodeUGS";
+            this.lblCodeUGS.Size = new System.Drawing.Size(47, 37);
+            this.lblCodeUGS.TabIndex = 16;
+            this.lblCodeUGS.Text = "...";
+            // 
+            // lblVille
+            // 
+            this.lblVille.AutoSize = true;
+            this.lblVille.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVille.ForeColor = System.Drawing.Color.Blue;
+            this.lblVille.Location = new System.Drawing.Point(127, 25);
+            this.lblVille.Name = "lblVille";
+            this.lblVille.Size = new System.Drawing.Size(47, 37);
+            this.lblVille.TabIndex = 17;
+            this.lblVille.Text = "...";
+            // 
+            // BtnVerifExiste
+            // 
+            this.BtnVerifExiste.BackColor = System.Drawing.Color.Transparent;
+            this.BtnVerifExiste.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.BtnVerifExiste.Location = new System.Drawing.Point(291, 20);
+            this.BtnVerifExiste.Name = "BtnVerifExiste";
+            this.BtnVerifExiste.Size = new System.Drawing.Size(125, 59);
+            this.BtnVerifExiste.TabIndex = 18;
+            this.BtnVerifExiste.Text = "Vérif existance";
+            this.BtnVerifExiste.UseVisualStyleBackColor = false;
+            this.BtnVerifExiste.Click += new System.EventHandler(this.BtnVerifExiste_Click);
+            // 
+            // BtnCreer
+            // 
+            this.BtnCreer.Enabled = false;
+            this.BtnCreer.Location = new System.Drawing.Point(497, 20);
+            this.BtnCreer.Name = "BtnCreer";
+            this.BtnCreer.Size = new System.Drawing.Size(125, 59);
+            this.BtnCreer.TabIndex = 19;
+            this.BtnCreer.Text = "Créer objets";
+            this.BtnCreer.UseVisualStyleBackColor = true;
+            this.BtnCreer.Click += new System.EventHandler(this.BtnCreer_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1392, 840);
-            this.Controls.Add(this.tabControlGeneral);
-            this.Controls.Add(this.BtnNEXT);
+            this.Controls.Add(this.BtnCreer);
+            this.Controls.Add(this.BtnVerifExiste);
+            this.Controls.Add(this.lblVille);
+            this.Controls.Add(this.lblCodeUGS);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.rtConfig);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.treeObjects);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.rtLog);
+            this.Controls.Add(this.BtnGenesysFile);
+            this.Controls.Add(this.BtnCiscoFile);
             this.Controls.Add(this.tabCtrl);
             this.Controls.Add(this.BtnGO);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtGenesysPassword);
@@ -1110,10 +1040,6 @@
             this.tabCtrl.ResumeLayout(false);
             this.tabGenesys.ResumeLayout(false);
             this.tabGenesys.PerformLayout();
-            this.tabControlGeneral.ResumeLayout(false);
-            this.tabPageChoix.ResumeLayout(false);
-            this.tabPageCisco.ResumeLayout(false);
-            this.tabPageCisco.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1125,7 +1051,6 @@
         private System.Windows.Forms.TextBox txtGenesysPassword;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button BtnGO;
         private System.Windows.Forms.TabControl tabCtrl;
         private System.Windows.Forms.TabPage tabGenesys;
@@ -1167,7 +1092,6 @@
         private System.Windows.Forms.CheckBox cbAccessGroup;
         private System.Windows.Forms.CheckBox cbPerson;
         private System.Windows.Forms.CheckBox cbFolder;
-        private System.Windows.Forms.Button BtnNEXT;
         private System.Windows.Forms.Label lblResultTransactionList;
         private System.Windows.Forms.Label lblResultERP;
         private System.Windows.Forms.Label lblResultRoutingPoint;
@@ -1196,22 +1120,18 @@
         private System.Windows.Forms.Label lblFichierOptionsApp;
         private System.Windows.Forms.Label lblOptionsApp;
         private System.Windows.Forms.RichTextBox rtbConfigEvtInconnu;
-        private System.Windows.Forms.TabControl tabControlGeneral;
-        private System.Windows.Forms.TabPage tabPageChoix;
-        private System.Windows.Forms.Button btnGenesys;
-        private System.Windows.Forms.Button btnCisco;
-        private System.Windows.Forms.TabPage tabPageCisco;
-        private System.Windows.Forms.TabPage tabPageGenesys;
-        private System.Windows.Forms.Label lblCiscoVille;
-        private System.Windows.Forms.Label lblCiscoCodeUGS;
-        private System.Windows.Forms.TreeView treeCisco;
-        private System.Windows.Forms.Button BtnCiscoVerifExiste;
-        private System.Windows.Forms.Button BtnCiscoCreer;
-        private System.Windows.Forms.RichTextBox rtCiscoLog;
-        private System.Windows.Forms.RichTextBox rtCiscoConfig;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button BtnCiscoFile;
+        private System.Windows.Forms.Button BtnGenesysFile;
+        private System.Windows.Forms.RichTextBox rtConfig;
+        private System.Windows.Forms.TreeView treeObjects;
+        private System.Windows.Forms.RichTextBox rtLog;
+        private System.Windows.Forms.Label lblCodeUGS;
+        private System.Windows.Forms.Label lblVille;
+        private System.Windows.Forms.Button BtnVerifExiste;
+        private System.Windows.Forms.Button BtnCreer;
     }
 }
 

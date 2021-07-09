@@ -22,6 +22,7 @@ namespace CreateSite
         public Suivi genesysSuivi;
         public Cisco cisco;
         public Section config;
+        public Target cible;
 
         public const string LBL_PHYSICAL_LOCATION = "Physical Location";
         public const string LBL_LOCATION = "Location";
@@ -38,6 +39,12 @@ namespace CreateSite
         public const string LBL_DEVICE_POOL = "Device Pool";
         public const string LBL_LINE = "Line";
         public const string LBL_CTI_ROUTEPOINT = "CTI RoutePoint";
+
+        public const string LBL_FOLDER = "Folder";
+        public const string LBL_PLACE = "Place";
+        public const string LBL_SKILL = "Skill";
+        public const string LBL_VQUEUE = "Virtual Queue";
+        public const string LBL_GROUPOFQUEUE = "Group of Queues";
 
         public enum TraceLevel { INFO, WARNING, ERROR };
         public enum Target { Cisco, Genesys };
@@ -226,6 +233,203 @@ namespace CreateSite
         private void TraiteFichierCisco()
         {
             ParseInifile();
+
+            try
+            {
+                lblCodeUGS.Text = config.getOption("Site");
+                lblVille.Text = config.getOption("Nom");
+
+            }
+            catch (Exception)
+            {
+                // Les infos de base sont non présentes (à bloquer via une pré-vérif) ?
+            }
+
+            List<Section> liste;
+
+            // Ajout paramètres config
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Config);
+            foreach (CleValeur cv in liste[0].Options)
+            {
+                rtConfig.AppendText(cv.Cle + " : ");
+                rtConfig.SelectionStart = rtConfig.TextLength;
+                rtConfig.SelectionLength = 0;
+                rtConfig.SelectionFont = new Font(rtConfig.Font, FontStyle.Bold);
+                rtConfig.AppendText(cv.Valeur);
+                rtConfig.AppendText("\r\n");
+            }
+
+            // Ajout Physical Location
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.PhysicalLocation);
+            if (liste.Count > 0)
+            {
+                TreeNode phyloc = treeObjects.Nodes.Add(LBL_PHYSICAL_LOCATION, LBL_PHYSICAL_LOCATION);
+                foreach (Section section in liste)
+                {
+                    phyloc.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Location
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Location);
+            if (liste.Count > 0)
+            {
+                TreeNode loc = treeObjects.Nodes.Add(LBL_LOCATION, LBL_LOCATION);
+                foreach (Section section in liste)
+                {
+                    loc.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout CSS
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.CallingSearchSpace);
+            if (liste.Count > 0)
+            {
+                TreeNode css = treeObjects.Nodes.Add(LBL_CSS, LBL_CSS);
+                foreach (Section section in liste) // Une section par CSS
+                {
+                    css.Nodes.Add(section.Name); // Le nom est dans la section
+                }
+            }
+
+            // Ajout Geolocation
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Geolocation);
+            if (liste.Count > 0)
+            {
+                TreeNode css = treeObjects.Nodes.Add(LBL_GEOLOC, LBL_GEOLOC);
+                foreach (Section section in liste) // Une section par Geoloc
+                {
+                    css.Nodes.Add(section.Name); // Le nom est dans la section
+                }
+            }
+
+            // Ajout Line Group
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.LineGroup);
+            if (liste.Count > 0)
+            {
+                TreeNode lg = treeObjects.Nodes.Add(LBL_LINEGROUP, LBL_LINEGROUP);
+                foreach (Section section in liste) // Une section par Line Group
+                {
+                    lg.Nodes.Add(section.Name); // Le nom est dans la section
+                }
+            }
+
+            // Ajout Hunt List
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.HuntList);
+            if (liste.Count > 0)
+            {
+                TreeNode hl = treeObjects.Nodes.Add(LBL_HUNT_LIST, LBL_HUNT_LIST);
+                foreach (Section section in liste) // Une section par Line Group
+                {
+                    hl.Nodes.Add(section.Name); // Le nom est dans la section
+                }
+            }
+
+            // Ajout Hunt Pilot
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.HuntPilot);
+            if (liste.Count > 0)
+            {
+                TreeNode hp = treeObjects.Nodes.Add(LBL_HUNT_PILOT, LBL_HUNT_PILOT);
+                foreach (Section section in liste)
+                {
+                    hp.Nodes.Add(section.Name); // Le numéro est dans la section
+                }
+            }
+
+            // Ajout Translation Pattern
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.TranslationPattern);
+            if (liste.Count > 0)
+            {
+                TreeNode tp = treeObjects.Nodes.Add(LBL_TRANSLATION_PATTERN, LBL_TRANSLATION_PATTERN);
+                foreach (Section section in liste)
+                {
+                    tp.Nodes.Add(section.Name); // Le numéro est dans la section
+                }
+            }
+
+            // Ajout Calling Party Tranformation Pattern
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.CallingPartyTransformationPattern);
+            if (liste.Count > 0)
+            {
+                TreeNode cg = treeObjects.Nodes.Add(LBL_CALG_PARTY_TFP, LBL_CALG_PARTY_TFP);
+                foreach (Section section in liste)
+                {
+                    cg.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Called Party Tranformation Pattern
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.CalledPartyTransformationPattern);
+            if (liste.Count > 0)
+            {
+                TreeNode cd = treeObjects.Nodes.Add(LBL_CALD_PARTY_TFP, LBL_CALD_PARTY_TFP);
+                foreach (Section section in liste)
+                {
+                    cd.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Device Mobility Info
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.DeviceMobilityInfo);
+            if (liste.Count > 0)
+            {
+                TreeNode dm = treeObjects.Nodes.Add(LBL_DEVICE_MOBILITY, LBL_DEVICE_MOBILITY);
+                foreach (Section section in liste)
+                {
+                    dm.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Region
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Region);
+            if (liste.Count > 0)
+            {
+                TreeNode re = treeObjects.Nodes.Add(LBL_REGION, LBL_REGION);
+                foreach (Section section in liste)
+                {
+                    re.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Device Pool
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.DevicePool);
+            if (liste.Count > 0)
+            {
+                TreeNode dp = treeObjects.Nodes.Add(LBL_DEVICE_POOL, LBL_DEVICE_POOL);
+                foreach (Section section in liste)
+                {
+                    dp.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout Line
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Line);
+            if (liste.Count > 0)
+            {
+                TreeNode li = treeObjects.Nodes.Add(LBL_LINE, LBL_LINE);
+                foreach (Section section in liste)
+                {
+                    li.Nodes.Add(section.Name);
+                }
+            }
+
+            // Ajout CTI RoutePoint
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.CTIRoutePoint);
+            if (liste.Count > 0)
+            {
+                TreeNode cti = treeObjects.Nodes.Add(LBL_CTI_ROUTEPOINT, LBL_CTI_ROUTEPOINT);
+                foreach (Section section in liste)
+                {
+                    cti.Nodes.Add(section.Name);
+                }
+            }
+
+
+            treeObjects.ExpandAll();
+
+            cible = Target.Cisco;
+
+
         }
 
         private void TraiteFichierGenesys()
@@ -245,10 +449,7 @@ namespace CreateSite
 
             ParseInifile();
 
-            CheckConfigGenesys();
-
-            AfficheEvenements();
-
+            GenesysAjout();
         }
 
         // Affiche les évènements
@@ -301,26 +502,344 @@ namespace CreateSite
             return result;
         }
 
-        private void CheckConfigGenesys()
+        private void GenesysAjout()
         {
             List<Section> liste;
 
-            // Check Folder
+            // Ajout Folder
             liste = ini.Sections.FindAll(s => s.Type == SectionType.Folder);
-            if (IsWildcard(liste))
+            if (liste.Count > 0)
             {
-                lblFichierFolder.BackColor = Color.Red;
+                TreeNode fol = treeObjects.Nodes.Add(LBL_FOLDER, LBL_FOLDER);
+                foreach (CleValeur cv in liste[0].Options)
+                {
+                    TreeNode t = fol.Nodes.Add(cv.Valeur);
+                }
             }
 
-            // Check Access Group
-            liste = ini.Sections.FindAll(s => s.Type == SectionType.AccessGroup);
-            if (IsWildcard(liste))
+            // Ajout Place
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Place);
+            if (liste.Count > 0)
             {
-                lblFichierAccessGroup.BackColor = Color.Red;
+                TreeNode pla = treeObjects.Nodes.Add(LBL_PLACE, LBL_PLACE);
+                foreach (Section section in liste)
+                {
+                    TreeNode t = pla.Nodes.Add(section.Name);
+                    t.Tag = section;
+                }
             }
+
+            // Ajout Skill
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.Skill);
+            if (liste.Count > 0)
+            {
+                TreeNode ski = treeObjects.Nodes.Add(LBL_SKILL, LBL_SKILL);
+                foreach (Section section in liste)
+                {
+                    TreeNode t = ski.Nodes.Add(section.Name);
+                    t.Tag = section;
+                }
+            }
+
+            // Ajout Virtual Queue
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.VirtualQueue);
+            if (liste.Count > 0)
+            {
+                TreeNode vq = treeObjects.Nodes.Add(LBL_VQUEUE, LBL_VQUEUE);
+                foreach (Section section in liste)
+                {
+                    string folder = section.getOption("Folder");
+                    string[] pathlist = folder.Split('\\');
+                    if (pathlist.Length < 3)
+                        Trace(Target.Genesys, TraceLevel.WARNING, "Virtual Queue : " + section.Name + " répertoire incorrect : " + folder);
+                    else
+                    {
+                        string switchname = pathlist[2];
+                        TreeNode t = vq.Nodes.Add(section.Name + " (" + switchname+ ")");
+                        t.Tag = section;
+                    }
+                }
+            }
+
+            // Ajout Group of Queues
+            liste = ini.Sections.FindAll(s => s.Type == SectionType.GroupOfQueue);
+            if (liste.Count > 0)
+            {
+                TreeNode vq = treeObjects.Nodes.Add(LBL_GROUPOFQUEUE, LBL_GROUPOFQUEUE);
+                foreach (Section section in liste)
+                {
+                    string folder = section.getOption("Folder");
+                    TreeNode t = vq.Nodes.Add(section.Name);
+                    t.Tag = section;
+                }
+            }
+
+
+            treeObjects.ExpandAll();
+
+            cible = Target.Genesys;
 
         }
 
+        private void GenesysVerifExiste()
+        {
+            genesys = new Genesys("genserv", 2020, txtGenesysLogin.Text, txtGenesysPassword.Text);
+            genesys.Init();
+
+            Trace(Target.Genesys, TraceLevel.INFO, "------------------------------");
+            Trace(Target.Genesys, TraceLevel.INFO, "Début Vérification.");
+
+            // Vérif Folder
+            Trace(Target.Genesys, TraceLevel.INFO, "Vérification " + LBL_FOLDER);
+            TreeNode fol = treeObjects.Nodes[LBL_FOLDER];
+            if (fol != null)
+            {
+                foreach (TreeNode node in fol.Nodes)
+                {
+                    string name = node.Text;
+                    CfgFolder fo = genesys.GetFolder(name);
+                    if (fo != null) // existe déjà
+                    {
+                        Trace(Target.Genesys, TraceLevel.WARNING, "Existant : " + name);
+                        node.ForeColor = Color.Red;
+                    }
+                }
+            }
+
+
+            // Vérif Place
+            Trace(Target.Genesys, TraceLevel.INFO, "Vérification " + LBL_PLACE);
+            TreeNode pla = treeObjects.Nodes[LBL_PLACE];
+            if (pla != null)
+            {
+                foreach (TreeNode node in pla.Nodes)
+                {
+                    string name = node.Text;
+                    CfgPlace pl = genesys.GetPlace(name);
+                    if (pl != null) // existe déjà
+                    {
+                        Trace(Target.Genesys, TraceLevel.WARNING, "Existant : " + name);
+                        node.ForeColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Skill
+            Trace(Target.Genesys, TraceLevel.INFO, "Vérification " + LBL_SKILL);
+            TreeNode ski = treeObjects.Nodes[LBL_SKILL];
+            if (ski != null)
+            {
+                foreach (TreeNode node in ski.Nodes)
+                {
+                    string name = node.Text;
+                    CfgSkill sk = genesys.GetSkill(name);
+                    if (sk != null) // existe déjà
+                    {
+                        Trace(Target.Genesys, TraceLevel.WARNING, "Existant : " + name);
+                        node.ForeColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Virtual Queue
+            Trace(Target.Genesys, TraceLevel.INFO, "Vérification " + LBL_VQUEUE);
+            TreeNode vq = treeObjects.Nodes[LBL_VQUEUE];
+            if (vq != null)
+            {
+                foreach (TreeNode node in vq.Nodes)
+                {
+                    Section section = (Section)node.Tag;
+                    string[] pathlist = section.getOption("Folder").Split('\\');
+                    string switchname = pathlist[2];
+                    CfgDN v = genesys.GetVirtualQueue(section.Name, switchname);
+                    if (v != null) // existe déjà
+                    {
+                        Trace(Target.Genesys, TraceLevel.WARNING, "Existant : " + section.Name + " dans " + switchname);
+                        node.ForeColor = Color.Red;
+                    }
+                }
+            }
+
+            // Vérif Group of Queues
+            Trace(Target.Genesys, TraceLevel.INFO, "Vérification " + LBL_GROUPOFQUEUE);
+            TreeNode goq = treeObjects.Nodes[LBL_GROUPOFQUEUE];
+            if (goq != null)
+            {
+                foreach (TreeNode node in goq.Nodes)
+                {
+                    Section section = (Section)node.Tag;
+                    CfgDNGroup g = genesys.GetDNGroup(section.Name);
+                    if (g != null) // existe déjà
+                    {
+                        Trace(Target.Genesys, TraceLevel.WARNING, "Existant : " + section.Name);
+                        node.ForeColor = Color.Red;
+                    }
+                }
+            }
+
+
+            BtnCreer.Enabled = true;
+        }
+
+        private void GenesysCreer()
+        {
+            Trace(Target.Genesys, TraceLevel.INFO, "------------------------------");
+            Trace(Target.Genesys, TraceLevel.INFO, "Début Création.");
+
+            // Crée Folder
+            Trace(Target.Genesys, TraceLevel.INFO, "Création " + LBL_FOLDER);
+            TreeNode fol = treeObjects.Nodes[LBL_FOLDER];
+            if (fol != null)
+            {
+                foreach (TreeNode node in fol.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        string res = genesys.AddFolder(name);
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Genesys, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Genesys, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+            // Crée Place
+            Trace(Target.Genesys, TraceLevel.INFO, "Création " + LBL_PLACE);
+            TreeNode pla = treeObjects.Nodes[LBL_PLACE];
+            if (pla != null)
+            {
+                foreach (TreeNode node in pla.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        Section section = (Section)node.Tag;
+                        string res = genesys.AddPlace(name, section.getOption("Folder"));
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Genesys, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Genesys, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+            // Crée Skill
+            Trace(Target.Genesys, TraceLevel.INFO, "Création " + LBL_SKILL);
+            TreeNode ski = treeObjects.Nodes[LBL_SKILL];
+            if (ski != null)
+            {
+                foreach (TreeNode node in ski.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        string name = node.Text;
+                        Section section = (Section)node.Tag;
+                        string res = genesys.AddSkill(name, section.getOption("Folder"));
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Genesys, TraceLevel.ERROR, name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Genesys, TraceLevel.INFO, "Créé : " + name);
+                        }
+                    }
+                }
+            }
+
+
+            // Crée Virtual Queue
+            Trace(Target.Genesys, TraceLevel.INFO, "Création " + LBL_VQUEUE);
+            TreeNode vq = treeObjects.Nodes[LBL_VQUEUE];
+            if (vq != null)
+            {
+                foreach (TreeNode node in vq.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        Section section = (Section)node.Tag;
+                        string res = genesys.AddVirutalQueue(section.Name, section.getOption("Folder"));
+                        if (!res.Equals(""))
+                        {
+                            Trace(Target.Genesys, TraceLevel.ERROR, section.Name + " " + res);
+                            node.BackColor = Color.Blue;
+                        }
+                        else
+                        {
+                            Trace(Target.Genesys, TraceLevel.INFO, "Créé : " + section.Name);
+                        }
+                    }
+                }
+            }
+
+            // Crée Group of Queues
+            Trace(Target.Genesys, TraceLevel.INFO, "Création " + LBL_GROUPOFQUEUE);
+            TreeNode goq = treeObjects.Nodes[LBL_GROUPOFQUEUE];
+            if (goq != null)
+            {
+                foreach (TreeNode node in goq.Nodes)
+                {
+                    if (node.Checked)
+                    {
+                        Section section = (Section)node.Tag;
+                        string folder = section.getOption("Folder");
+                        // Si on a un répertoire : on crée le DN Group (sinon ça peut être juste une mise à jour de ses queues)
+                        if (!folder.Equals(""))
+                        {
+                            string res = genesys.AddDNGroup(section.Name, folder);
+                            if (!res.Equals(""))
+                            {
+                                Trace(Target.Genesys, TraceLevel.ERROR, section.Name + " " + res);
+                                node.BackColor = Color.Blue;
+                            }
+                            else
+                            {
+                                Trace(Target.Genesys, TraceLevel.INFO, "Créé : " + section.Name);
+                            }
+                        }
+
+                        // On ajout les queues à l'intérieur
+                        string[] queues = section.Options.Find(o => o.Cle.Equals("VQ")).Valeur.Split(';');
+                        foreach (string queue in queues)
+                        {
+                            string[] qlong = queue.Split('_');
+                            string sw = qlong[qlong.Length - 1];
+
+                            string[] qshort = new string[qlong.Length - 1];
+                            Array.Copy(qlong, qshort, qlong.Length - 1);
+
+                            string res = genesys.AddVirtualQueueToDNGroup(string.Join("_", qshort), sw, section.Name);
+                            if (!res.Equals(""))
+                            {
+                                Trace(Target.Genesys, TraceLevel.ERROR, section.Name + " " + res);
+                                node.BackColor = Color.Blue;
+                            }
+                            else
+                            {
+                                Trace(Target.Genesys, TraceLevel.INFO, "DN "+ queue + " ajouté à " + section.Name);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+        }
+
+        /*
         private void BtnNEXT_Click(object sender, EventArgs e)
         {
             List<Section> liste;
@@ -358,7 +877,7 @@ namespace CreateSite
                     string lastName = sect.Options.Find(o => o.Cle.Equals("LastName")).Valeur;
                     string emloyeeId = sect.Options.Find(o => o.Cle.Equals("EmployeeId")).Valeur;
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     if (!genesys.AddPerson(sect.Name,emloyeeId,firstName,lastName,folderid))
                     {
                         lblResultPerson.BackColor = Color.Red;
@@ -374,7 +893,7 @@ namespace CreateSite
                 foreach (Section sect in liste)
                 {
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     if (!genesys.AddAccessGroup(sect.Name, folderid))
                     {
                         lblResultAccessGroup.BackColor = Color.Red;
@@ -402,7 +921,7 @@ namespace CreateSite
                     if (cleFolder != null)
                     {
                         folder = cleFolder.Valeur;
-                        folderid = genesys.RetrieveFolder(folder).DBID;
+                        folderid = genesys.GetFolder(folder).DBID;
                         string annexe = sect.Options.Find(o => o.Cle.Equals("Script")).Valeur;
                         if (!genesys.AddAgentGroup(sect.Name, annexe, folderid))
                         {
@@ -430,7 +949,7 @@ namespace CreateSite
                 foreach (Section sect in liste)
                 {
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     if (!genesys.AddSkill(sect.Name, folderid))
                     {
                         lblResultSkill.BackColor = Color.Red;
@@ -445,7 +964,7 @@ namespace CreateSite
                 foreach (Section sect in liste)
                 {
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     if (!genesys.AddVirutalQueue(sect.Name, folder.Split('\\')[1], folderid))
                     {
                         lblResultVirtualQueue.BackColor = Color.Red;
@@ -464,7 +983,7 @@ namespace CreateSite
                     if (cleFolder != null)
                     {
                         folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                        folderid = genesys.RetrieveFolder(folder).DBID;
+                        folderid = genesys.GetFolder(folder).DBID;
                         if (!genesys.AddDNGroup(sect.Name, folderid))
                         {
                             lblResultGroupOfQueue.BackColor = Color.Red;
@@ -495,9 +1014,10 @@ namespace CreateSite
                 liste = ini.Sections.FindAll(s => s.Type == SectionType.Place);
                 foreach (Section sect in liste)
                 {
-                    folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
-                    if (!genesys.AddPlace(sect.Name, folderid))
+                    folder = sect.getOption("Folder");
+                    folderid = genesys.GetFolder(folder).DBID;
+                    string res = genesys.AddPlace(sect.Name, folderid);
+                    if (!res.Equals(""))
                     {
                         lblResultPlace.BackColor = Color.Red;
                     }
@@ -511,7 +1031,7 @@ namespace CreateSite
                 foreach (Section sect in liste)
                 {
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     alias = sect.Options.Find(o => o.Cle.Equals("Alias")).Valeur;
                     kv = new KeyValueCollection();
                     genesys.AddValue2KVList(ref kv, "__ROUTER__", "Categorie_Type", sect.Options.Find(o => o.Cle.Equals("Categorie_Type")).Valeur);
@@ -543,7 +1063,7 @@ namespace CreateSite
                 foreach (Section sect in liste)
                 {
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     alias = sect.Options.Find(o => o.Cle.Equals("Alias")).Valeur;
                     string epn = sect.Options.Find(o => o.Cle.Equals("epn")).Valeur;
                     string association = sect.Options.Find(o => o.Cle.Equals("association")).Valeur;
@@ -566,7 +1086,7 @@ namespace CreateSite
                     if (cleFolder != null)
                     {
                         folder = cleFolder.Valeur;
-                        folderid = genesys.RetrieveFolder(folder).DBID;
+                        folderid = genesys.GetFolder(folder).DBID;
                         kv = new KeyValueCollection();
                         foreach(CleValeur clevaleur in sect.Options)
                         {
@@ -625,7 +1145,7 @@ namespace CreateSite
                 foreach (Section sect in liste)
                 {
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     templatename = sect.Options.Find(o => o.Cle.Equals("Template")).Valeur;
                     string storagefile = sect.Options.Find(o => o.Cle.Equals("Storage")).Valeur;
                     string liststatservers = sect.Options.Find(o => o.Cle.Equals("StatServer")).Valeur;
@@ -643,7 +1163,7 @@ namespace CreateSite
                 foreach (Section sect in liste)
                 {
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     string ipaddress = sect.Options.Find(o => o.Cle.Equals("IPAddress")).Valeur;
                     string scsname = sect.Options.Find(o => o.Cle.Equals("SCS")).Valeur;
                     if (!genesys.AddHost(sect.Name,ipaddress, scsname, folderid))
@@ -660,7 +1180,7 @@ namespace CreateSite
                 foreach (Section sect in liste)
                 {
                     folder = sect.Options.Find(o => o.Cle.Equals("Folder")).Valeur;
-                    folderid = genesys.RetrieveFolder(folder).DBID;
+                    folderid = genesys.GetFolder(folder).DBID;
                     templatename = sect.Options.Find(o => o.Cle.Equals("Template")).Valeur;
                     string host = sect.Options.Find(o => o.Cle.Equals("Host")).Valeur;
                     string user = sect.Options.Find(o => o.Cle.Equals("User")).Valeur;
@@ -673,12 +1193,15 @@ namespace CreateSite
 
         }
 
+        */
+
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (genesys != null)
                 genesys.Disconnect();
         }
 
+        /*
         private void BtnCisco_Click(object sender, EventArgs e)
         {
             TraiteFichierCisco();
@@ -882,7 +1405,9 @@ namespace CreateSite
         }
 
 
-        private void BtnCiscoVerifExiste_Click(object sender, EventArgs e)
+*/
+
+        private void CiscoVerifExiste()
         {
             cisco = new Cisco("https://192.168.1.46:8443/axl/", "ccmadministrator", "BcH1Kf0T");
             cisco.Init();
@@ -891,11 +1416,11 @@ namespace CreateSite
             Trace(Target.Cisco, TraceLevel.INFO, "Début Vérification.");
 
             // Vérif Physical Location
-            Trace(Target.Cisco, TraceLevel.INFO, "Vérification "+ LBL_PHYSICAL_LOCATION);
-            TreeNode phyloc = treeCisco.Nodes[LBL_PHYSICAL_LOCATION];
+            Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_PHYSICAL_LOCATION);
+            TreeNode phyloc = treeObjects.Nodes[LBL_PHYSICAL_LOCATION];
             if (phyloc != null)
             {
-                foreach(TreeNode node in phyloc.Nodes)
+                foreach (TreeNode node in phyloc.Nodes)
                 {
                     string name = node.Text;
                     GetPhysicalLocationRes ph = cisco.GetPhysicalLocation(name);
@@ -909,7 +1434,7 @@ namespace CreateSite
 
             // Vérif Location
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_LOCATION);
-            TreeNode loc = treeCisco.Nodes[LBL_LOCATION];
+            TreeNode loc = treeObjects.Nodes[LBL_LOCATION];
             if (loc != null)
             {
                 foreach (TreeNode node in loc.Nodes)
@@ -926,7 +1451,7 @@ namespace CreateSite
 
             // Vérif Geoloc
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_GEOLOC);
-            TreeNode geo = treeCisco.Nodes[LBL_GEOLOC];
+            TreeNode geo = treeObjects.Nodes[LBL_GEOLOC];
             if (geo != null)
             {
                 foreach (TreeNode node in geo.Nodes)
@@ -943,7 +1468,7 @@ namespace CreateSite
 
             // Vérif Line Group
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_LINEGROUP);
-            TreeNode lg = treeCisco.Nodes[LBL_LINEGROUP];
+            TreeNode lg = treeObjects.Nodes[LBL_LINEGROUP];
             if (lg != null)
             {
                 foreach (TreeNode node in lg.Nodes)
@@ -960,7 +1485,7 @@ namespace CreateSite
 
             // Vérif Hunt List
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_HUNT_LIST);
-            TreeNode hl = treeCisco.Nodes[LBL_HUNT_LIST];
+            TreeNode hl = treeObjects.Nodes[LBL_HUNT_LIST];
             if (hl != null)
             {
                 foreach (TreeNode node in hl.Nodes)
@@ -977,13 +1502,13 @@ namespace CreateSite
 
             // Vérif Hunt Pilot
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_HUNT_PILOT);
-            TreeNode hp = treeCisco.Nodes[LBL_HUNT_PILOT];
+            TreeNode hp = treeObjects.Nodes[LBL_HUNT_PILOT];
             if (hp != null)
             {
                 foreach (TreeNode node in hp.Nodes)
                 {
                     string numero = node.Text;
-                    GetHuntPilotRes h = cisco.GetHuntPilot(numero,"ALL_Interne_P");
+                    GetHuntPilotRes h = cisco.GetHuntPilot(numero, "ALL_Interne_P");
                     if (h != null) // existe déjà
                     {
                         Trace(Target.Cisco, TraceLevel.WARNING, "Existant : " + numero + " ALL_Interne_P");
@@ -994,7 +1519,7 @@ namespace CreateSite
 
             // Vérif Translation Pattern
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_TRANSLATION_PATTERN);
-            TreeNode tp = treeCisco.Nodes[LBL_TRANSLATION_PATTERN];
+            TreeNode tp = treeObjects.Nodes[LBL_TRANSLATION_PATTERN];
             if (tp != null)
             {
                 foreach (TreeNode node in tp.Nodes)
@@ -1013,7 +1538,7 @@ namespace CreateSite
 
             // Vérif Calling Party Transformation Pattern
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_CALG_PARTY_TFP);
-            TreeNode cg = treeCisco.Nodes[LBL_CALG_PARTY_TFP];
+            TreeNode cg = treeObjects.Nodes[LBL_CALG_PARTY_TFP];
             if (cg != null)
             {
                 foreach (TreeNode node in cg.Nodes)
@@ -1032,7 +1557,7 @@ namespace CreateSite
 
             // Vérif Called Party Transformation Pattern
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_CALD_PARTY_TFP);
-            TreeNode cd = treeCisco.Nodes[LBL_CALD_PARTY_TFP];
+            TreeNode cd = treeObjects.Nodes[LBL_CALD_PARTY_TFP];
             if (cd != null)
             {
                 foreach (TreeNode node in cd.Nodes)
@@ -1051,7 +1576,7 @@ namespace CreateSite
 
             // Vérif Device Mobility Info
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_DEVICE_MOBILITY);
-            TreeNode dm = treeCisco.Nodes[LBL_DEVICE_MOBILITY];
+            TreeNode dm = treeObjects.Nodes[LBL_DEVICE_MOBILITY];
             if (dm != null)
             {
                 foreach (TreeNode node in dm.Nodes)
@@ -1068,7 +1593,7 @@ namespace CreateSite
 
             // Vérif Region
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_REGION);
-            TreeNode re = treeCisco.Nodes[LBL_REGION];
+            TreeNode re = treeObjects.Nodes[LBL_REGION];
             if (re != null)
             {
                 foreach (TreeNode node in re.Nodes)
@@ -1085,7 +1610,7 @@ namespace CreateSite
 
             // Vérif Device Pool
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_DEVICE_POOL);
-            TreeNode dp = treeCisco.Nodes[LBL_DEVICE_POOL];
+            TreeNode dp = treeObjects.Nodes[LBL_DEVICE_POOL];
             if (dp != null)
             {
                 foreach (TreeNode node in dp.Nodes)
@@ -1102,7 +1627,7 @@ namespace CreateSite
 
             // Vérif Line
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_LINE);
-            TreeNode li = treeCisco.Nodes[LBL_LINE];
+            TreeNode li = treeObjects.Nodes[LBL_LINE];
             if (li != null)
             {
                 foreach (TreeNode node in li.Nodes)
@@ -1121,7 +1646,7 @@ namespace CreateSite
 
             // Vérif CTI Route Point
             Trace(Target.Cisco, TraceLevel.INFO, "Vérification " + LBL_CTI_ROUTEPOINT);
-            TreeNode cti = treeCisco.Nodes[LBL_CTI_ROUTEPOINT];
+            TreeNode cti = treeObjects.Nodes[LBL_CTI_ROUTEPOINT];
             if (cti != null)
             {
                 foreach (TreeNode node in cti.Nodes)
@@ -1136,18 +1661,19 @@ namespace CreateSite
                 }
             }
 
-            BtnCiscoCreer.Enabled = true;
+            BtnCreer.Enabled = true;
+
 
         }
 
-        private void BtnCiscoCreer_Click(object sender, EventArgs e)
+        private void CiscoCreer()
         {
             Trace(Target.Cisco, TraceLevel.INFO, "------------------------------");
             Trace(Target.Cisco, TraceLevel.INFO, "Début Création.");
 
             // Crée Physical Location
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_PHYSICAL_LOCATION);
-            TreeNode phyloc = treeCisco.Nodes[LBL_PHYSICAL_LOCATION];
+            TreeNode phyloc = treeObjects.Nodes[LBL_PHYSICAL_LOCATION];
             if (phyloc != null)
             {
                 foreach (TreeNode node in phyloc.Nodes)
@@ -1160,7 +1686,8 @@ namespace CreateSite
                         {
                             Trace(Target.Cisco, TraceLevel.ERROR, name + " " + res);
                             node.BackColor = Color.Blue;
-                        } else
+                        }
+                        else
                         {
                             Trace(Target.Cisco, TraceLevel.INFO, "Créé : " + name);
                         }
@@ -1170,7 +1697,7 @@ namespace CreateSite
 
             // Crée Location
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_LOCATION);
-            TreeNode loc = treeCisco.Nodes[LBL_LOCATION];
+            TreeNode loc = treeObjects.Nodes[LBL_LOCATION];
             if (loc != null)
             {
                 foreach (TreeNode node in loc.Nodes)
@@ -1194,7 +1721,7 @@ namespace CreateSite
 
             // Créer Geolocation
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_GEOLOC);
-            TreeNode geo = treeCisco.Nodes[LBL_GEOLOC];
+            TreeNode geo = treeObjects.Nodes[LBL_GEOLOC];
             if (geo != null)
             {
                 foreach (TreeNode node in geo.Nodes)
@@ -1221,7 +1748,7 @@ namespace CreateSite
 
             // Créer Line Group
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_LINEGROUP);
-            TreeNode lg = treeCisco.Nodes[LBL_LINEGROUP];
+            TreeNode lg = treeObjects.Nodes[LBL_LINEGROUP];
             if (lg != null)
             {
                 foreach (TreeNode node in lg.Nodes)
@@ -1245,7 +1772,7 @@ namespace CreateSite
 
             // Créer Hunt List
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_HUNT_LIST);
-            TreeNode hl = treeCisco.Nodes[LBL_HUNT_LIST];
+            TreeNode hl = treeObjects.Nodes[LBL_HUNT_LIST];
             if (hl != null)
             {
                 foreach (TreeNode node in hl.Nodes)
@@ -1272,7 +1799,7 @@ namespace CreateSite
 
             // Créer Hunt Pilot
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_HUNT_PILOT);
-            TreeNode hp = treeCisco.Nodes[LBL_HUNT_PILOT];
+            TreeNode hp = treeObjects.Nodes[LBL_HUNT_PILOT];
             if (hp != null)
             {
                 foreach (TreeNode node in hp.Nodes)
@@ -1299,7 +1826,7 @@ namespace CreateSite
 
             // Créer Translation Pattern
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_TRANSLATION_PATTERN);
-            TreeNode tp = treeCisco.Nodes[LBL_TRANSLATION_PATTERN];
+            TreeNode tp = treeObjects.Nodes[LBL_TRANSLATION_PATTERN];
             if (tp != null)
             {
                 foreach (TreeNode node in tp.Nodes)
@@ -1329,7 +1856,7 @@ namespace CreateSite
 
             // Créer Calling Party Transformation Pattern
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_CALG_PARTY_TFP);
-            TreeNode cg = treeCisco.Nodes[LBL_CALG_PARTY_TFP];
+            TreeNode cg = treeObjects.Nodes[LBL_CALG_PARTY_TFP];
             if (cg != null)
             {
                 foreach (TreeNode node in cg.Nodes)
@@ -1357,7 +1884,7 @@ namespace CreateSite
 
             // Créer Called Party Transformation Pattern
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_CALD_PARTY_TFP);
-            TreeNode cd = treeCisco.Nodes[LBL_CALD_PARTY_TFP];
+            TreeNode cd = treeObjects.Nodes[LBL_CALD_PARTY_TFP];
             if (cd != null)
             {
                 foreach (TreeNode node in cd.Nodes)
@@ -1385,7 +1912,7 @@ namespace CreateSite
 
             // Créer Device Mobility Info
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_DEVICE_MOBILITY);
-            TreeNode dm = treeCisco.Nodes[LBL_DEVICE_MOBILITY];
+            TreeNode dm = treeObjects.Nodes[LBL_DEVICE_MOBILITY];
             if (dm != null)
             {
                 foreach (TreeNode node in dm.Nodes)
@@ -1413,7 +1940,7 @@ namespace CreateSite
 
             // Créer Region
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_REGION);
-            TreeNode re = treeCisco.Nodes[LBL_REGION];
+            TreeNode re = treeObjects.Nodes[LBL_REGION];
             if (re != null)
             {
                 foreach (TreeNode node in re.Nodes)
@@ -1442,7 +1969,7 @@ namespace CreateSite
 
             // Créer Device Pool
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_DEVICE_POOL);
-            TreeNode dp = treeCisco.Nodes[LBL_DEVICE_POOL];
+            TreeNode dp = treeObjects.Nodes[LBL_DEVICE_POOL];
             if (dp != null)
             {
                 foreach (TreeNode node in dp.Nodes)
@@ -1478,7 +2005,7 @@ namespace CreateSite
 
             // Créer Line
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_LINE);
-            TreeNode li = treeCisco.Nodes[LBL_LINE];
+            TreeNode li = treeObjects.Nodes[LBL_LINE];
             if (li != null)
             {
                 foreach (TreeNode node in li.Nodes)
@@ -1510,7 +2037,7 @@ namespace CreateSite
 
             // Créer CTI Route Point
             Trace(Target.Cisco, TraceLevel.INFO, "Création " + LBL_CTI_ROUTEPOINT);
-            TreeNode cti = treeCisco.Nodes[LBL_CTI_ROUTEPOINT];
+            TreeNode cti = treeObjects.Nodes[LBL_CTI_ROUTEPOINT];
             if (cti != null)
             {
                 foreach (TreeNode node in cti.Nodes)
@@ -1556,7 +2083,59 @@ namespace CreateSite
             }
         }
 
-        private void treeCisco_AfterCheck(object sender, TreeViewEventArgs e)
+
+        public void Trace(Target target, TraceLevel level, string text)
+        {
+            rtLog.SelectionStart = rtLog.TextLength;
+            rtLog.SelectionLength = 0;
+
+            switch (level)
+            {
+                case TraceLevel.INFO:
+                    rtLog.SelectionColor = Color.Green;
+                    break;
+                case TraceLevel.WARNING:
+                    rtLog.SelectionColor = Color.DarkOrange;
+                    break;
+                case TraceLevel.ERROR:
+                    rtLog.SelectionColor = Color.Red;
+                    break;
+            }
+
+            rtLog.AppendText(DateTime.Now.ToString("HH:mm"));
+            rtLog.AppendText(" : ");
+            rtLog.AppendText(text);
+            rtLog.AppendText("\r\n");
+
+            rtLog.SelectionStart = rtLog.Text.Length;
+            rtLog.ScrollToCaret();
+        }
+
+        private void BtnCiscoFile_Click(object sender, EventArgs e)
+        {
+            TraiteFichierCisco();
+
+        }
+
+        private void BtnVerifExiste_Click(object sender, EventArgs e)
+        {
+            switch (cible)
+            {
+                case Target.Cisco:
+                    CiscoVerifExiste();
+                    break;
+                case Target.Genesys:
+                    GenesysVerifExiste();
+                    break;
+            }
+        }
+
+        private void BtnGenesysFile_Click(object sender, EventArgs e)
+        {
+            TraiteFichierGenesys();
+        }
+
+        private void treeObjects_AfterCheck(object sender, TreeViewEventArgs e)
         {
             // Quand on coche ou décoche une case
             if (e.Action != TreeViewAction.Unknown)
@@ -1565,18 +2144,20 @@ namespace CreateSite
                 if (e.Node.Nodes.Count > 0)
                 {
                     this.CheckAllChildNodes(e.Node, e.Node.Checked);
-                } else // si on était sur un fils
+                }
+                else // si on était sur un fils
                 {
                     // si on décoche alors on décoche le parent
                     if (!e.Node.Checked)
                     {
                         e.Node.Parent.Checked = false;
-                    } else
+                    }
+                    else
                     {
                         // Si tous les autres fils sont cochés, alos on coche le parent
                         TreeNode parent = e.Node.Parent;
                         bool coche = true;
-                        foreach(TreeNode fils in parent.Nodes)
+                        foreach (TreeNode fils in parent.Nodes)
                         {
                             if (!fils.Checked)
                                 coche = false;
@@ -1586,46 +2167,21 @@ namespace CreateSite
                     }
                 }
             }
+
         }
 
-        public void Trace(Target target, TraceLevel level, string text)
+        private void BtnCreer_Click(object sender, EventArgs e)
         {
-            RichTextBox richText = null;
-
-            switch (target)
+            switch (cible)
             {
                 case Target.Cisco:
-                    richText = rtCiscoLog;
+                    CiscoCreer();
                     break;
                 case Target.Genesys:
-                    richText = null;
+                    GenesysCreer();
                     break;
             }
 
-
-            richText.SelectionStart = richText.TextLength;
-            richText.SelectionLength = 0;
-
-            switch (level)
-            {
-                case TraceLevel.INFO:
-                    richText.SelectionColor = Color.Green;
-                    break;
-                case TraceLevel.WARNING:
-                    richText.SelectionColor = Color.DarkOrange;
-                    break;
-                case TraceLevel.ERROR:
-                    richText.SelectionColor = Color.Red;
-                    break;
-            }
-
-            richText.AppendText(DateTime.Now.ToString("HH:mm"));
-            richText.AppendText(" : ");
-            richText.AppendText(text);
-            richText.AppendText("\r\n");
-
-            richText.SelectionStart = richText.Text.Length;
-            richText.ScrollToCaret();
         }
     }
 }

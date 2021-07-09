@@ -33,7 +33,7 @@ namespace CreateSite
             Password = password;
         }
 
-        public void Connect()
+        public void Init()
         {
             Endpoint endpoint = new Endpoint("default", Host, Port);
             confservProtocol = new ConfServerProtocol(endpoint);
@@ -58,13 +58,6 @@ namespace CreateSite
                 {
                 }
             }
-        }
-
-        internal CfgDNGroup RetrieveDNGroup(string group)
-        {
-            CfgDNGroupQuery query = new CfgDNGroupQuery { Name = group };
-
-            return confService.RetrieveObject<CfgDNGroup>(query);
         }
 
         internal CfgApplication RetrieveApplication(string name)
@@ -123,13 +116,29 @@ namespace CreateSite
             return confService.RetrieveObject<CfgSwitch>(query);
         }
 
-        // Retourne un Root Folder via son nom (Persons, Places,...)
-        internal CfgFolder RetrieveRootFolder(string name)
+        public CfgTenant GetTenant(string name)
+        {
+            CfgTenantQuery query = new CfgTenantQuery { Name = name, AllTenants = 1 };
+
+            return confService.RetrieveObject<CfgTenant>(query);
+        }
+
+
+        #region Folder
+        // Retourne un Root Folder via son nom (Persons, Places,...) et son tenant (Environment, Resources,...)
+        internal CfgFolder RetrieveRootFolder(string rootname, string tenantname)
         {
             CfgFolderQuery query = new CfgFolderQuery(confService);
-            query.Name = name;
+            query.Name = rootname;
             query.DefaultFolder = 1;
+
+            CfgTenant tenant = GetTenant(tenantname);
+            if (tenant == null)
+                return null;
+
+            query.OwnerDbid = tenant.DBID;
             
+//            ICollection<CfgFolder> res = confService.RetrieveMultipleObjects<CfgFolder>(query);
 
             return confService.RetrieveObject<CfgFolder>(query);
 
@@ -166,14 +175,20 @@ namespace CreateSite
         }
 
         // Retourne un CfgFolder via son path complet
-        public CfgFolder RetrieveFolder(string path) 
+        public CfgFolder GetFolder(string path) 
         {
             CfgFolderQuery query = new CfgFolderQuery();
             int dbid;
 
             string[] pathlist = path.Split('\\');
-            string rootname = pathlist[0];
-            CfgFolder folder = RetrieveRootFolder(rootname);
+
+            // Il faut au minimum le tenant et le root
+            if (pathlist.Length < 2)
+                return null;
+
+            string tenantname = pathlist[0];
+            string rootname = pathlist[1];
+            CfgFolder folder = RetrieveRootFolder(rootname,tenantname);
 
             if (folder != null)
                 dbid = folder.DBID;
@@ -185,10 +200,10 @@ namespace CreateSite
             {
                 try
                 {
-                    CfgSwitch sw = RetrieveSwitch(pathlist[1]);
+                    CfgSwitch sw = RetrieveSwitch(pathlist[2]);
                     if (sw != null)
                     {
-                        folder = RetrieveChildSwitch(pathlist[2], sw.DBID);
+                        folder = RetrieveChildSwitch(pathlist[3], sw.DBID);
                         dbid = folder.DBID;
                     }
                     else
@@ -204,7 +219,7 @@ namespace CreateSite
             int idx = 0;
             foreach (string name in pathlist)
             {
-                if ((idx != 0) && (folder != null) && !(rootname.Equals("Switches") && idx <= 2))
+                if ((idx >= 2) && (folder != null) && !(rootname.Equals("Switches") && idx <=3))
                 {
                     folder = RetrieveChildFolder(name, dbid);
                     if (folder != null)
@@ -227,16 +242,20 @@ namespace CreateSite
         }
 
 
-        public bool AddFolder(string path)
+        public string AddFolder(string path)
         {
-            bool result = true;
+            string result = "";
 
             // On recherche le Folder parent
             string[] pathlist = path.Split('\\');
+
+            if (pathlist.Length < 2)
+                return "Msg: " + path + " : Nom de répertoire incorrect" ;
+
             string[] pathlistparent = new string[pathlist.Length - 1];
             Array.Copy(pathlist, pathlistparent, pathlist.Length - 1);
 
-            CfgFolder folderparent = RetrieveFolder(string.Join("\\", pathlistparent));
+            CfgFolder folderparent = GetFolder(string.Join("\\", pathlistparent));
 
             CfgFolder folder = new CfgFolder(confService);
             folder.Name = pathlist[pathlist.Length - 1];
@@ -257,15 +276,15 @@ namespace CreateSite
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    result = false;
+                    result = "Msg : " + e.Message;
                 }
-            }
-            else
-                result = false;
+            } else
+                result = "Msg : Répertoire parent non trouvé.";
 
             return result;
         }
+
+        #endregion
 
         public void AddValue2KVList(ref KeyValueCollection kv, string section, string option, string value)
         {
@@ -379,15 +398,28 @@ namespace CreateSite
             return result;
         }
 
-        public bool AddSkill(string name, int parentid)
+        #region Skill
+
+        public CfgSkill GetSkill(string name)
         {
-            bool result = true;
+            CfgSkillQuery query = new CfgSkillQuery { Name = name };
+
+            return confService.RetrieveObject<CfgSkill>(query);
+        }
+
+        public string AddSkill(string name, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgSkill skill = new CfgSkill(confService);
 
-            skill.SetTenantDBID(101);
+            skill.SetTenantDBID(folder.OwnerID.DBID);
             skill.Name = name;
-            skill.FolderId = parentid;
+            skill.FolderId = folder.DBID;
 
             try
             {
@@ -395,21 +427,33 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
 
             return result;
         }
+        #endregion
 
-        public bool AddPlace(string name, int parentid)
+        #region Place
+        public CfgPlace GetPlace(string name)
         {
-            bool result = true;
+            CfgPlaceQuery query = new CfgPlaceQuery { Name = name };
+
+            return confService.RetrieveObject<CfgPlace>(query);
+        }
+
+        public string AddPlace(string name, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgPlace place = new CfgPlace(confService);
 
-            place.SetTenantDBID(101);
-            place.FolderId = parentid;
+            place.SetTenantDBID(folder.OwnerID.DBID);
+            place.FolderId = folder.DBID;
             place.Name = name;
 
             try
@@ -418,12 +462,12 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
 
             return result;
         }
+        #endregion
 
         public bool AddAccessGroup(string name, int parentid)
         {
@@ -522,52 +566,45 @@ namespace CreateSite
             return result;
         }
 
-        public bool AddVirtualQueueToDNGroup(string queue, string switchname,string group)
+
+        #region Virtual Queue
+
+        public CfgDN GetVirtualQueue(string name, string switchname)
         {
-            bool result = true;
-            CfgDNGroup dngroup = RetrieveDNGroup(group);
+            CfgSwitch sw = RetrieveSwitch(switchname);
 
-            if (dngroup != null)
-            {
-                CfgSwitch sw = RetrieveSwitch(switchname);
-                if (sw != null)
-                {
-                    CfgDN dn = RetrieveDN(queue, sw.DBID);
+            if (sw == null)
+                return null;
 
-                    if (dn != null)
-                    {
-                        CfgDNInfo dninfo = new CfgDNInfo(confService, null);
-                        dninfo.DN = dn;
-                        dngroup.DNs.Add(dninfo);
+            CfgDNQuery query = new CfgDNQuery { DnNumber = name, SwitchDbid = sw.DBID };
 
-                        dngroup.Save();
-                    }
-                    else
-                        result = false;
-                }
-                else
-                    result = false;
-
-            }
-            else
-                result = false;
-
-            return result;
+            return confService.RetrieveObject<CfgDN>(query);
         }
 
-        public bool AddVirutalQueue(string name, string switchname, int directory)
+        public string AddVirutalQueue(string name, string folderpath)
         {
-            bool result = true;
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
+
+            string[] pathlist = folderpath.Split('\\');
+
+            if (pathlist.Length < 3)
+                return "Msg : nom de répertoire incorrect";
+
+            string switchname = pathlist[2];
 
             CfgDN queue = new CfgDN(confService);
 
             queue.Number = name;
             queue.Name = name + "_" + switchname;
-            queue.SetTenantDBID(101);
+            queue.SetTenantDBID(folder.OwnerID.DBID);
             queue.Type = CfgDNType.CFGVirtACDQueue;
             queue.RouteType = CfgRouteType.CFGDefault;
             queue.SwitchSpecificType = 1;
-            queue.FolderId = directory;
+            queue.FolderId = folder.DBID;
 
             CfgSwitch sw = RetrieveSwitch(switchname);
             if (sw != null)
@@ -580,15 +617,16 @@ namespace CreateSite
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    result = false;
+                    result = "Msg : " + e.Message;
                 }
             }
             else
-                result = false;
+                result = "Msg : Switch " + switchname + " non trouvé" ;
 
             return result;
         }
+
+        #endregion
 
         public bool AddRoutingPoint(string name, string switchname, string alias, KeyValueCollection annexe, int parentid)
         {
@@ -698,15 +736,28 @@ namespace CreateSite
             return result;
         }
 
-        public bool AddDNGroup(string name, int directory)
+        #region DN Group
+
+        public CfgDNGroup GetDNGroup(string name)
         {
-            bool result = true;
+            CfgDNGroupQuery query = new CfgDNGroupQuery { Name = name };
+
+            return confService.RetrieveObject<CfgDNGroup>(query);
+        }
+
+        public string AddDNGroup(string name, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgDNGroup group = new CfgDNGroup(confService);
             
             group.GroupInfo = new CfgGroup(confService, null);
-            group.GroupInfo.SetTenantDBID(101);
-            group.FolderId = directory;
+            group.GroupInfo.SetTenantDBID(folder.OwnerID.DBID);
+            group.FolderId = folder.DBID;
             group.Type = CfgDNGroupType.CFGACDQueues;
             group.GroupInfo.Name = name;
             
@@ -716,12 +767,53 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
 
             return result;
         }
+
+        public string AddVirtualQueueToDNGroup(string queue, string switchname, string group)
+        {
+            string result = "";
+            CfgDNGroup dngroup = GetDNGroup(group);
+
+            if (dngroup != null)
+            {
+                CfgSwitch sw = RetrieveSwitch(switchname);
+                if (sw != null)
+                {
+                    CfgDN dn = RetrieveDN(queue, sw.DBID);
+
+                    if (dn != null)
+                    {
+                        CfgDNInfo dninfo = new CfgDNInfo(confService, null);
+                        dninfo.DN = dn;
+                        dngroup.DNs.Add(dninfo);
+
+                        try
+                        {
+                            dngroup.Save();
+                        }
+                        catch (Exception e)
+                        {
+                            result = "Msg : " + e.Message;
+                        }
+                    }
+                    else
+                        result = "Msg : virtual queue non trouvée.";
+                }
+                else
+                    result = "Msg : Switch non trouvé.";
+
+            }
+            else
+                result = "Msg : DN Group non trouvé.";
+
+            return result;
+        }
+
+        #endregion
 
         public bool AddAgentGroup(string name, string annexe, int directory)
         {
