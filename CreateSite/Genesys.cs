@@ -60,55 +60,25 @@ namespace CreateSite
             }
         }
 
-        internal CfgApplication RetrieveApplication(string name)
+        public CfgApplication GetApplication(string name)
         {
             CfgApplicationQuery query = new CfgApplicationQuery { Name = name };
 
             return confService.RetrieveObject<CfgApplication>(query);
         }
 
-        internal CfgHost RetrieveHost(string name)
+        public CfgDN GetDN(string dn, string switchname)
         {
-            CfgHostQuery query = new CfgHostQuery { Name = name };
+            CfgSwitch sw = RetrieveSwitch(switchname);
 
-            return confService.RetrieveObject<CfgHost>(query);
-        }
+            if (sw == null)
+                return null;
 
-        internal CfgAccessGroup RetrieveAccessGroup(string group)
-        {
-            CfgAccessGroupQuery query = new CfgAccessGroupQuery { Name = group };
-
-            return confService.RetrieveObject<CfgAccessGroup>(query);
-        }
-
-        internal CfgAgentGroup RetrieveAgentGroup(string group)
-        {
-            CfgAgentGroupQuery query = new CfgAgentGroupQuery { Name = group };
-
-            return confService.RetrieveObject<CfgAgentGroup>(query);
-        }
-
-        internal CfgPerson RetrievePerson(string username)
-        {
-            CfgPersonQuery query = new CfgPersonQuery { UserName = username };
-
-            return confService.RetrieveObject<CfgPerson>(query);
-        }
-
-        internal CfgDN RetrieveDN(string dn, int switchid)
-        {
-            CfgDNQuery query = new CfgDNQuery { DnNumber = dn, SwitchDbid = switchid };
+            CfgDNQuery query = new CfgDNQuery { DnNumber = dn, SwitchDbid = sw.DBID };
 
             return confService.RetrieveObject<CfgDN>(query);
         }
-
-        internal CfgTransaction RetrieveTransactionList(string name)
-        {
-            CfgTransactionQuery query = new CfgTransactionQuery { Name = name };
-
-            return confService.RetrieveObject<CfgTransaction>(query);
-        }
-
+                
         internal CfgSwitch RetrieveSwitch(string name)
         {
             CfgSwitchQuery query = new CfgSwitchQuery { Name = name };
@@ -121,6 +91,22 @@ namespace CreateSite
             CfgTenantQuery query = new CfgTenantQuery { Name = name, AllTenants = 1 };
 
             return confService.RetrieveObject<CfgTenant>(query);
+        }
+
+        public void AddValue2KVList(ref KeyValueCollection kv, string section, string option, string value)
+        {
+            KeyValueCollection opt = new KeyValueCollection();
+            opt.Add(option, value);
+
+            if (kv.AllKeys.Contains<string>(section))
+            {
+                KeyValueCollection sec = kv.GetAsKeyValueCollection(section);
+                sec.Add(opt);
+            }
+            else
+            {
+                kv.Add(section, opt);
+            }
         }
 
 
@@ -177,7 +163,6 @@ namespace CreateSite
         // Retourne un CfgFolder via son path complet
         public CfgFolder GetFolder(string path) 
         {
-            CfgFolderQuery query = new CfgFolderQuery();
             int dbid;
 
             string[] pathlist = path.Split('\\');
@@ -286,45 +271,50 @@ namespace CreateSite
 
         #endregion
 
-        public void AddValue2KVList(ref KeyValueCollection kv, string section, string option, string value)
-        {
-            KeyValueCollection opt = new KeyValueCollection();
-            opt.Add(option, value);
+        #region Tranasction List
 
-            if (kv.AllKeys.Contains<string>(section))
-            {
-                KeyValueCollection sec = kv.GetAsKeyValueCollection(section);
-                sec.Add(opt);
-            } else
-            {
-                kv.Add(section, opt);
-            }
+        public CfgTransaction GetTransactionList(string name)
+        {
+            CfgTransactionQuery query = new CfgTransactionQuery { Name = name };
+
+            return confService.RetrieveObject<CfgTransaction>(query);
         }
 
-        public bool AddTransactionList(string name, int parentid, KeyValueCollection annexe)
+        public string AddTransactionList(string name, KeyValueCollection annexe, string folderpath)
         {
-            bool result = true;
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgTransaction transaction = new CfgTransaction(confService);
 
             transaction.Type = CfgTransactionType.CFGTRTList;
-            transaction.SetTenantDBID(101);
+            transaction.SetTenantDBID(folder.OwnerID.DBID);
             transaction.Name = name;
             transaction.Alias = name;
-            transaction.FolderId = parentid;
+            transaction.FolderId = folder.DBID;
             transaction.UserProperties = annexe;
 
-            transaction.Save();
+            try
+            {
+                transaction.Save();
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
 
             return result;
         }
 
         // Ajout des annexes sur une TL existante
-        public bool UpdateTransactionList(string name, KeyValueCollection annexe)
+        public string UpdateTransactionList(string name, KeyValueCollection annexe)
         {
-            bool result = true;
+            string result = "";
 
-            CfgTransaction tl = RetrieveTransactionList(name);
+            CfgTransaction tl = GetTransactionList(name);
 
             if (tl != null)
             {
@@ -362,26 +352,40 @@ namespace CreateSite
                 }
                 catch (Exception e )
                 {
-                    Console.WriteLine(e.Message);
-                    result = false;
+                    result = "Msg : " + e.Message;
                 }
             }
             else
             {
-                result = false;
+                result = "Msg : Transaction List " + name + " non trouvée.";
             }
 
             return result;
         }
 
-        public bool AddInteractionQueue(string name, int parentid)
+        #endregion
+
+        #region Interaction Queue
+
+        public CfgScript GetInteractionQueue(string name)
         {
-            bool result = true;
+            CfgScriptQuery query = new CfgScriptQuery { Name = name };
+
+            return confService.RetrieveObject<CfgScript>(query);
+        }
+
+        public string AddInteractionQueue(string name, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgScript script = new CfgScript(confService);
 
-            script.SetTenantDBID(101);
-            script.FolderId = parentid;
+            script.SetTenantDBID(folder.OwnerID.DBID);
+            script.FolderId = folder.DBID;
             script.Name = name;
             script.Type = CfgScriptType.CFGInteractionQueue;
 
@@ -391,12 +395,13 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
 
             return result;
         }
+
+        #endregion
 
         #region Skill
 
@@ -469,16 +474,29 @@ namespace CreateSite
         }
         #endregion
 
-        public bool AddAccessGroup(string name, int parentid)
+        #region Access Group
+
+        public CfgAccessGroup GetAccessGroup(string group)
         {
-            bool result = true;
+            CfgAccessGroupQuery query = new CfgAccessGroupQuery { Name = group };
+
+            return confService.RetrieveObject<CfgAccessGroup>(query);
+        }
+
+        public string AddAccessGroup(string name, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgAccessGroup accessGroup = new CfgAccessGroup(confService);
 
-            accessGroup.FolderId = parentid;
+            accessGroup.FolderId = folder.DBID;
             accessGroup.GroupInfo = new CfgGroup(confService, null);
             accessGroup.GroupInfo.Name = name;
-            accessGroup.GroupInfo.SetTenantDBID(101);
+            accessGroup.GroupInfo.SetTenantDBID(folder.OwnerID.DBID);
 
             try
             {
@@ -486,63 +504,18 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
 
             return result;
         }
 
-        public bool AddPerson(string username, string employyeid, string firstname, string lastname, int parentid)
+        public string AddPersonToAccessGroup(string username, string groupname)
         {
-            bool result = true;
+            string result = "";
 
-            CfgPerson person = new CfgPerson(confService);
-
-            person.SetTenantDBID(101);
-            person.FolderId = parentid;
-            person.FirstName = firstname;
-            person.LastName = lastname;
-            person.UserName = username;
-            person.EmployeeID = employyeid;
-            person.IsAgent = CfgFlag.CFGFalse;
-
-            try
-            {
-                person.Save();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                result = false;
-            }
-
-            return result;
-        }
-
-        public bool AddAccessGroupRightsToAgentGroup(string agentgroupname, string accessgroupname)
-        {
-            bool result = true;
-
-            CfgAccessGroup acg = RetrieveAccessGroup(accessgroupname);
-            CfgAgentGroup agg = RetrieveAgentGroup(agentgroupname);
-
-            if ((agg != null) && (acg != null))
-            {
-                agg.SetAccountPermissions(acg,0, false);
-            }
-            else
-                result = false;
-
-            return result;
-        }
-
-        public bool AddPersonToAccessGroup(string username, string groupname)
-        {
-            bool result = true;
-
-            CfgAccessGroup ag = RetrieveAccessGroup(groupname);
-            CfgPerson person = RetrievePerson(username);
+            CfgAccessGroup ag = GetAccessGroup(groupname);
+            CfgPerson person = GetPerson(username);
 
             if ((ag != null) && (person != null))
             {
@@ -556,19 +529,73 @@ namespace CreateSite
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    result = false;
+                    result = "Msg : " + e.Message;
                 }
             }
             else
-                result = false;
+            {
+                if (ag != null)
+                {
+                    result = "Msg : Person " + username + " non trouvée.";
+                } 
+                else
+                {
+                    result = "Msg : Access Group " + groupname + " non trouvé.";
+                }
+            }
+                
 
             return result;
         }
 
 
+        #endregion
+
+        #region Person
+
+        public CfgPerson GetPerson(string username)
+        {
+            CfgPersonQuery query = new CfgPersonQuery { UserName = username };
+
+            return confService.RetrieveObject<CfgPerson>(query);
+        }
+
+        public string AddPerson(string username, string employyeid, string firstname, string lastname, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
+
+            CfgPerson person = new CfgPerson(confService);
+
+            person.SetTenantDBID(folder.OwnerID.DBID);
+            person.FolderId = folder.DBID;
+            person.FirstName = firstname;
+            person.LastName = lastname;
+            person.UserName = username;
+            person.EmployeeID = employyeid;
+            person.IsAgent = CfgFlag.CFGFalse;
+
+            try
+            {
+                person.Save();
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+
+            return result;
+        }
+
+        #endregion
+
         #region Virtual Queue
 
+        // Utilise GetDN
+        /*
         public CfgDN GetVirtualQueue(string name, string switchname)
         {
             CfgSwitch sw = RetrieveSwitch(switchname);
@@ -579,7 +606,7 @@ namespace CreateSite
             CfgDNQuery query = new CfgDNQuery { DnNumber = name, SwitchDbid = sw.DBID };
 
             return confService.RetrieveObject<CfgDN>(query);
-        }
+        }*/
 
         public string AddVirutalQueue(string name, string folderpath)
         {
@@ -628,21 +655,33 @@ namespace CreateSite
 
         #endregion
 
-        public bool AddRoutingPoint(string name, string switchname, string alias, KeyValueCollection annexe, int parentid)
+        #region Routing Point
+
+        public string AddRoutingPoint(string name, string alias, KeyValueCollection annexe, string folderpath)
         {
-            bool result = true;
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgDN routingpoint = new CfgDN(confService);
 
             routingpoint.Number = name;
             routingpoint.Name = alias + name;
-            routingpoint.SetTenantDBID(101);
+            routingpoint.SetTenantDBID(folder.OwnerID.DBID);
             routingpoint.Type = CfgDNType.CFGRoutingPoint;
             routingpoint.RouteType = CfgRouteType.CFGDefault;
             routingpoint.SwitchSpecificType = 1;
-            routingpoint.FolderId = parentid;
+            routingpoint.FolderId = folder.DBID;
             routingpoint.UserProperties = annexe;
-            
+
+            string[] pathlist = folderpath.Split('\\');
+
+            if (pathlist.Length < 3)
+                return "Msg : nom de répertoire incorrect";
+
+            string switchname = pathlist[2];
 
             CfgSwitch sw = RetrieveSwitch(switchname);
             if (sw != null)
@@ -655,69 +694,39 @@ namespace CreateSite
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    result = false;
+                    result = "Msg : " + e.Message;
                 }
             }
             else
-                result = false;
+                result = "Msg : Switch non trouvé.";
 
             return result;
         }
 
-        public bool AddExternalRoutingPoint(string name, string switchname, string alias, string epn, string association, int parentid)
+        public string AddDefaultToRoutingPoint(string routingpointname, string defaultname, string folderpath)
         {
-            bool result = true;
+            string result = "";
 
-            CfgDN routingpoint = new CfgDN(confService);
+            string[] pathlist = folderpath.Split('\\');
 
-            routingpoint.Number = name;
-            routingpoint.Name = alias + name;
-            routingpoint.SetTenantDBID(101);
-            routingpoint.Type = CfgDNType.CFGExtRoutingPoint;
-            routingpoint.RouteType = CfgRouteType.CFGDefault;
-            routingpoint.SwitchSpecificType = 1;
-            routingpoint.Association = association;
-            routingpoint.FolderId = parentid;
-            KeyValueCollection kv = new KeyValueCollection();
-            AddValue2KVList(ref kv, "TServer", "epn", epn);
-            routingpoint.UserProperties = kv;
+            if (pathlist.Length < 3)
+                return "Msg : nom de répertoire incorrect";
+
+            string switchname = pathlist[2];
 
 
-            CfgSwitch sw = RetrieveSwitch(switchname);
-            if (sw != null)
+            CfgDN rp = GetDN(routingpointname, switchname);
+            CfgDN def = GetDN(defaultname, switchname);
+
+            if (rp == null)
             {
-                routingpoint.SetSwitchDBID(sw.DBID);
-
-                try
-                {
-                    routingpoint.Save();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    result = false;
-                }
+                return "Msg : Routing Point " + routingpointname + " non trouvé.";
             }
-            else
-                result = false;
 
-            return result;
-        }
-
-        public bool AddDefaultToRoutingPoint(string routingpointname, string defaultname, string switchname)
-        {
-            bool result = true;
-
-            CfgSwitch sw = RetrieveSwitch(switchname);
-            if (sw == null)
-                return false;
-
-            CfgDN rp = RetrieveDN(routingpointname,sw.DBID);
-            CfgDN def = RetrieveDN(defaultname, sw.DBID);
-
-            if ((rp == null) || (def == null))
-                return false;
+            if (def == null)
+            {
+                return "Msg : Default " + defaultname + " non trouvé.";
+            }
 
             List<int> list = new List<int>();
             list.Add(def.DBID);
@@ -729,12 +738,66 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
 
             return result;
         }
+
+        #endregion
+
+        #region ERP
+
+        public string AddExternalRoutingPoint(string name, string alias, string epn, string association, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
+
+
+            CfgDN routingpoint = new CfgDN(confService);
+
+            routingpoint.Number = name;
+            routingpoint.Name = alias + name;
+            routingpoint.SetTenantDBID(folder.OwnerID.DBID);
+            routingpoint.Type = CfgDNType.CFGExtRoutingPoint;
+            routingpoint.RouteType = CfgRouteType.CFGDefault;
+            routingpoint.SwitchSpecificType = 1;
+            routingpoint.Association = association;
+            routingpoint.FolderId = folder.DBID;
+            KeyValueCollection kv = new KeyValueCollection();
+            AddValue2KVList(ref kv, "TServer", "epn", epn);
+            routingpoint.UserProperties = kv;
+
+            string[] pathlist = folderpath.Split('\\');
+
+            if (pathlist.Length < 3)
+                return "Msg : nom de répertoire incorrect";
+
+            string switchname = pathlist[2];
+            CfgSwitch sw = RetrieveSwitch(switchname);
+            if (sw != null)
+            {
+                routingpoint.SetSwitchDBID(sw.DBID);
+
+                try
+                {
+                    routingpoint.Save();
+                }
+                catch (Exception e)
+                {
+                    result = "Msg : " + e.Message;
+                }
+            }
+            else
+                result = "Msg : Switch " + switchname + " non trouvé";
+
+            return result;
+        }
+
+        #endregion
 
         #region DN Group
 
@@ -780,32 +843,25 @@ namespace CreateSite
 
             if (dngroup != null)
             {
-                CfgSwitch sw = RetrieveSwitch(switchname);
-                if (sw != null)
+                CfgDN dn = GetDN(queue, switchname);
+
+                if (dn != null)
                 {
-                    CfgDN dn = RetrieveDN(queue, sw.DBID);
+                    CfgDNInfo dninfo = new CfgDNInfo(confService, null);
+                    dninfo.DN = dn;
+                    dngroup.DNs.Add(dninfo);
 
-                    if (dn != null)
+                    try
                     {
-                        CfgDNInfo dninfo = new CfgDNInfo(confService, null);
-                        dninfo.DN = dn;
-                        dngroup.DNs.Add(dninfo);
-
-                        try
-                        {
-                            dngroup.Save();
-                        }
-                        catch (Exception e)
-                        {
-                            result = "Msg : " + e.Message;
-                        }
+                        dngroup.Save();
                     }
-                    else
-                        result = "Msg : virtual queue non trouvée.";
+                    catch (Exception e)
+                    {
+                        result = "Msg : " + e.Message;
+                    }
                 }
                 else
-                    result = "Msg : Switch non trouvé.";
-
+                    result = "Msg : virtual queue non trouvée.";
             }
             else
                 result = "Msg : DN Group non trouvé.";
@@ -815,15 +871,28 @@ namespace CreateSite
 
         #endregion
 
-        public bool AddAgentGroup(string name, string annexe, int directory)
+        #region Agent Group
+
+        public CfgAgentGroup GetAgentGroup(string group)
         {
-            bool result = true;
+            CfgAgentGroupQuery query = new CfgAgentGroupQuery { Name = group };
+
+            return confService.RetrieveObject<CfgAgentGroup>(query);
+        }
+
+        public string AddAgentGroup(string name, string annexe, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgAgentGroup group = new CfgAgentGroup(confService);
 
             group.GroupInfo = new CfgGroup(confService, null);
-            group.GroupInfo.SetTenantDBID(101);
-            group.FolderId = directory;
+            group.GroupInfo.SetTenantDBID(folder.OwnerID.DBID);
+            group.FolderId = folder.DBID;
             group.GroupInfo.Name = name;
 
             if (!annexe.Equals(""))
@@ -840,23 +909,60 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
             return result;
         }
 
-        public bool AddApplicationCCPulse(string name, string templatename, string storagefile, string liststatservers, int directory)
+        public string AddAccessGroupRightsToAgentGroup(string agentgroupname, string accessgroupname)
         {
-            bool result = true;
+            string result = "";
+
+            CfgAccessGroup acg = GetAccessGroup(accessgroupname);
+            CfgAgentGroup agg = GetAgentGroup(agentgroupname);
+
+            if ((agg != null) && (acg != null))
+            {
+                agg.SetAccountPermissions(acg, 0, false);
+            }
+            else
+            {
+                if (acg == null)
+                {
+                    result = "Msg : Access Group " + accessgroupname + " non trouvé.";
+                }
+                else
+                {
+                    result = "Msg : Agent Group " + agentgroupname + " non trouvé.";
+                }
+            }
+
+
+            return result;
+        }
+
+        #endregion
+
+        #region CCPulse
+
+        public string AddApplicationCCPulse(string name, string templatename, string storagefile, string liststatservers, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
 
             CfgApplication app = new CfgApplication(confService);
             app.Name = name;
-            app.FolderId = directory;
+            app.FolderId = folder.DBID;
 
             CfgAppPrototypeQuery query = new CfgAppPrototypeQuery(confService);
             query.Name = templatename;
             CfgAppPrototype appproto = confService.RetrieveObject<CfgAppPrototype>(query);
+
+            if (appproto == null)
+                return "Msg : Template " + templatename + " non trouvé.";
 
             app.AppPrototype = appproto;
 
@@ -873,12 +979,15 @@ namespace CreateSite
             foreach(string statserver in statservers)
             {
                 CfgConnInfo connInfo = new CfgConnInfo(confService, null);
-                connInfo.SetAppServerDBID(RetrieveApplication(statserver).DBID);
+
+                CfgApplication stat = GetApplication(statserver);
+                if (stat == null)
+                    return "Msg : Statserver " + statserver + " non trouvé.";
+
+                connInfo.SetAppServerDBID(stat.DBID);
                 cnx.Add(connInfo);
             }
             app.AppServers = cnx;
-
-
 
             try
             {
@@ -886,22 +995,33 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
             return result;
         }
 
-        public bool AddApplicationCSProxy(string name, string templatename, string host, string user, int directory)
+        #endregion
+
+        #region CS Proxy
+
+        public string AddApplicationCSProxy(string name, string templatename, string host, string user, string folderpath)
         {
-            bool result = true;
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
+
+            CfgHost cfgHost = GetHost(host);
+            if (cfgHost == null)
+                return "Msg : Host " + host + " inconnu.";
 
             CfgApplication app = new CfgApplication(confService);
 
             app.Name = name;
-            app.FolderId = directory;
+            app.FolderId = folder.DBID;
             app.ServerInfo = new CfgServer(confService, null);
-            app.ServerInfo.SetHostDBID(RetrieveHost(host).DBID);
+            app.ServerInfo.SetHostDBID(cfgHost.DBID);
             app.ServerInfo.Port = "2020";
             app.WorkDirectory = ".";
             app.CommandLine = ".";
@@ -910,16 +1030,29 @@ namespace CreateSite
             query.Name = templatename;
             CfgAppPrototype appproto = confService.RetrieveObject<CfgAppPrototype>(query);
 
+            if (appproto == null)
+                return "Msg : Template " + templatename + " inconnu.";
+
             app.AppPrototype = appproto;
             app.Options = appproto.Options; // On récupère les options de base du template
 
             // On ajoute le confserver et le MessageServer
             List<CfgConnInfo> cnx = new List<CfgConnInfo>();
             CfgConnInfo connInfo = new CfgConnInfo(confService, null);
-            connInfo.SetAppServerDBID(RetrieveApplication("confserv").DBID);
+
+            CfgApplication confserv = GetApplication("confserv");
+            if (confserv == null)
+                return "Msg : Application confserv non trouvée.";
+
+            connInfo.SetAppServerDBID(confserv.DBID);
             cnx.Add(connInfo);
             connInfo = new CfgConnInfo(confService, null);
-            connInfo.SetAppServerDBID(RetrieveApplication("MessageServer").DBID);
+
+            CfgApplication msgserver = GetApplication("MessageServer");
+            if (msgserver == null)
+                return "Msg : Application MessageServer non trouvée.";
+
+            connInfo.SetAppServerDBID(msgserver.DBID);
             cnx.Add(connInfo);
             app.AppServers = cnx;
 
@@ -930,31 +1063,53 @@ namespace CreateSite
                 // On met à jour le user de lancement une fois que l'application est créée
                 CfgApplicationQuery q = new CfgApplicationQuery { Name = name };
                 CfgApplication ap = confService.RetrieveObject<CfgApplication>(q);
-                ap.UpdateLogonAs(CfgObjectType.CFGPerson, RetrievePerson(user).DBID);
+
+                CfgPerson cfgPerson = GetPerson(user);
+                if (cfgPerson == null)
+                    return "Msg : user " + user + " non trouvé";
+                ap.UpdateLogonAs(CfgObjectType.CFGPerson, cfgPerson.DBID);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
 
             return result;
         }
 
-        public bool AddHost(string name, string ipaddress, string scsname, int directory)
+        #endregion
+
+        #region Host
+
+        public CfgHost GetHost(string name)
         {
-            bool result = true;
+            CfgHostQuery query = new CfgHostQuery { Name = name };
+
+            return confService.RetrieveObject<CfgHost>(query);
+        }
+
+        public string AddHost(string name, string ipaddress, string scsname, string folderpath)
+        {
+            string result = "";
+
+            CfgFolder folder = GetFolder(folderpath);
+            if (folder == null)
+                return "Msg : " + folderpath + " : répertoire non existant";
+
+            CfgApplication scs = GetApplication(scsname);
+            if (scs == null)
+                return "Msg : " + scsname + " : non existant";
 
             CfgHost host = new CfgHost(confService);
             host.Name = name;
             host.IPaddress = ipaddress;
             host.LCAPort = "4999";
-            host.FolderId = directory;
+            host.FolderId = folder.DBID;
             host.Type = CfgHostType.CFGNetworkServer;
             host.OSinfo = new CfgOS(confService, null);
             host.OSinfo.OStype = CfgOSType.CFGWindowsServer2008;
 
-            host.SetSCSDBID(RetrieveApplication(scsname).DBID);
+            host.SetSCSDBID(scs.DBID);
 
             try
             {
@@ -962,18 +1117,21 @@ namespace CreateSite
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
-                result = false;
+                result = "Msg : " + e.Message;
             }
 
             return result;
         }
 
-        public bool AddOptionStatServer(string statserver, KeyValueCollection annexe)
-        {
-            bool result = true;
+        #endregion
 
-            CfgApplication app = RetrieveApplication(statserver);
+        #region StatServer Option
+
+        public string AddOptionStatServer(string statserver, KeyValueCollection annexe)
+        {
+            string result = "";
+
+            CfgApplication app = GetApplication(statserver);
 
             if (app != null)
             {
@@ -1009,14 +1167,15 @@ namespace CreateSite
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
-                    result = false;
+                    result = "Msg : " + e.Message;
                 }
             }
             else
-                result = false;
+                result = "Msg : StatServer " + statserver + " non trouvé.";
 
             return result;
         }
+
+        #endregion
     }
 }

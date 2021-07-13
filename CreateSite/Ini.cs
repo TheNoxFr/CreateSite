@@ -22,7 +22,7 @@ namespace CreateSite
 
     public enum SectionType { Config, Folder, AccessGroup, AgentGroup, VirtualQueue, GroupOfQueue, Place, TransactionList, Person, RoutingPoint, ERP, Skill, CCPulse, Host, CSProxy, Options, Erreur,
         PhysicalLocation, CallingSearchSpace, Geolocation, LineGroup, HuntList, HuntPilot, TranslationPattern, CallingPartyTransformationPattern, CalledPartyTransformationPattern, Location,
-        DeviceMobilityInfo, Region, DevicePool, Line, CTIRoutePoint }; 
+        DeviceMobilityInfo, Region, DevicePool, Line, CTIRoutePoint, InteractionQueue }; 
 
     public class Section
     {
@@ -184,6 +184,13 @@ namespace CreateSite
             if ((Name.Length >= 2) && (Name.Substring(0, 2).Equals("VQ")))
             {
                 Type = SectionType.VirtualQueue;
+                Name = name.Substring(3, name.Length - 3);
+                return;
+            }
+
+            if ((Name.Length >= 2) && (Name.Substring(0, 2).Equals("IQ")))
+            {
+                Type = SectionType.InteractionQueue;
                 Name = name.Substring(3, name.Length - 3);
                 return;
             }
