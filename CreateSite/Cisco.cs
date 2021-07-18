@@ -23,12 +23,23 @@ namespace CreateSite
             Password = password;
         }
 
-        public void Init()
+        public string Init()
         {
+            string result = "";
+
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            client = new AXLAPIService { Url = Url, Credentials = new NetworkCredential(Login, Password) };
+            try
+            {
+                client = new AXLAPIService { Url = Url, Credentials = new NetworkCredential(Login, Password) };
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
+            
+            return result;
         }
 
         public bool AddPartition(string name, string description)

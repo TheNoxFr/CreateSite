@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtGenesysLogin = new System.Windows.Forms.TextBox();
-            this.txtGenesysPassword = new System.Windows.Forms.TextBox();
+            this.txtLogin = new System.Windows.Forms.TextBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -44,29 +44,35 @@
             this.lblVille = new System.Windows.Forms.Label();
             this.BtnVerifExiste = new System.Windows.Forms.Button();
             this.BtnCreer = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtServeur = new System.Windows.Forms.TextBox();
+            this.gbInitButton = new System.Windows.Forms.GroupBox();
+            this.gbFinalButton = new System.Windows.Forms.GroupBox();
+            this.gbInitButton.SuspendLayout();
+            this.gbFinalButton.SuspendLayout();
             this.SuspendLayout();
             // 
-            // txtGenesysLogin
+            // txtLogin
             // 
-            this.txtGenesysLogin.Location = new System.Drawing.Point(221, 708);
-            this.txtGenesysLogin.Name = "txtGenesysLogin";
-            this.txtGenesysLogin.Size = new System.Drawing.Size(100, 20);
-            this.txtGenesysLogin.TabIndex = 0;
-            this.txtGenesysLogin.Text = "default";
+            this.txtLogin.Location = new System.Drawing.Point(271, 16);
+            this.txtLogin.Name = "txtLogin";
+            this.txtLogin.Size = new System.Drawing.Size(100, 20);
+            this.txtLogin.TabIndex = 0;
+            this.txtLogin.Text = "default";
             // 
-            // txtGenesysPassword
+            // txtPassword
             // 
-            this.txtGenesysPassword.Location = new System.Drawing.Point(414, 708);
-            this.txtGenesysPassword.Name = "txtGenesysPassword";
-            this.txtGenesysPassword.PasswordChar = '*';
-            this.txtGenesysPassword.Size = new System.Drawing.Size(100, 20);
-            this.txtGenesysPassword.TabIndex = 1;
-            this.txtGenesysPassword.Text = "password";
+            this.txtPassword.Location = new System.Drawing.Point(464, 16);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
+            this.txtPassword.Size = new System.Drawing.Size(100, 20);
+            this.txtPassword.TabIndex = 1;
+            this.txtPassword.Text = "password";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(167, 715);
+            this.label1.Location = new System.Drawing.Point(226, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(39, 13);
             this.label1.TabIndex = 2;
@@ -75,7 +81,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(349, 715);
+            this.label2.Location = new System.Drawing.Point(399, 20);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 13);
             this.label2.TabIndex = 3;
@@ -110,9 +116,9 @@
             // 
             // BtnCiscoFile
             // 
-            this.BtnCiscoFile.Location = new System.Drawing.Point(279, 543);
+            this.BtnCiscoFile.Location = new System.Drawing.Point(33, 9);
             this.BtnCiscoFile.Name = "BtnCiscoFile";
-            this.BtnCiscoFile.Size = new System.Drawing.Size(201, 100);
+            this.BtnCiscoFile.Size = new System.Drawing.Size(149, 59);
             this.BtnCiscoFile.TabIndex = 11;
             this.BtnCiscoFile.Text = "Cisco";
             this.BtnCiscoFile.UseVisualStyleBackColor = true;
@@ -120,9 +126,9 @@
             // 
             // BtnGenesysFile
             // 
-            this.BtnGenesysFile.Location = new System.Drawing.Point(631, 543);
+            this.BtnGenesysFile.Location = new System.Drawing.Point(226, 9);
             this.BtnGenesysFile.Name = "BtnGenesysFile";
-            this.BtnGenesysFile.Size = new System.Drawing.Size(201, 100);
+            this.BtnGenesysFile.Size = new System.Drawing.Size(160, 59);
             this.BtnGenesysFile.TabIndex = 12;
             this.BtnGenesysFile.Text = "Genesys";
             this.BtnGenesysFile.UseVisualStyleBackColor = true;
@@ -133,7 +139,7 @@
             this.rtConfig.BackColor = System.Drawing.Color.Silver;
             this.rtConfig.Location = new System.Drawing.Point(21, 110);
             this.rtConfig.Name = "rtConfig";
-            this.rtConfig.Size = new System.Drawing.Size(273, 427);
+            this.rtConfig.Size = new System.Drawing.Size(273, 704);
             this.rtConfig.TabIndex = 13;
             this.rtConfig.Text = "";
             // 
@@ -143,7 +149,7 @@
             this.treeObjects.CheckBoxes = true;
             this.treeObjects.Location = new System.Drawing.Point(330, 110);
             this.treeObjects.Name = "treeObjects";
-            this.treeObjects.Size = new System.Drawing.Size(429, 427);
+            this.treeObjects.Size = new System.Drawing.Size(429, 704);
             this.treeObjects.TabIndex = 14;
             this.treeObjects.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeObjects_AfterCheck);
             // 
@@ -153,7 +159,7 @@
             this.rtLog.Location = new System.Drawing.Point(806, 110);
             this.rtLog.Name = "rtLog";
             this.rtLog.ReadOnly = true;
-            this.rtLog.Size = new System.Drawing.Size(525, 427);
+            this.rtLog.Size = new System.Drawing.Size(525, 704);
             this.rtLog.TabIndex = 15;
             this.rtLog.Text = "";
             // 
@@ -183,18 +189,18 @@
             // 
             this.BtnVerifExiste.BackColor = System.Drawing.Color.Transparent;
             this.BtnVerifExiste.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.BtnVerifExiste.Location = new System.Drawing.Point(330, 20);
+            this.BtnVerifExiste.Location = new System.Drawing.Point(615, 8);
             this.BtnVerifExiste.Name = "BtnVerifExiste";
             this.BtnVerifExiste.Size = new System.Drawing.Size(125, 59);
             this.BtnVerifExiste.TabIndex = 18;
-            this.BtnVerifExiste.Text = "Vérif existance";
+            this.BtnVerifExiste.Text = "Vérif existence";
             this.BtnVerifExiste.UseVisualStyleBackColor = false;
             this.BtnVerifExiste.Click += new System.EventHandler(this.BtnVerifExiste_Click);
             // 
             // BtnCreer
             // 
             this.BtnCreer.Enabled = false;
-            this.BtnCreer.Location = new System.Drawing.Point(634, 20);
+            this.BtnCreer.Location = new System.Drawing.Point(780, 8);
             this.BtnCreer.Name = "BtnCreer";
             this.BtnCreer.Size = new System.Drawing.Size(125, 59);
             this.BtnCreer.TabIndex = 19;
@@ -202,13 +208,57 @@
             this.BtnCreer.UseVisualStyleBackColor = true;
             this.BtnCreer.Click += new System.EventHandler(this.BtnCreer_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(21, 20);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(50, 13);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Serveur :";
+            // 
+            // txtServeur
+            // 
+            this.txtServeur.Location = new System.Drawing.Point(77, 16);
+            this.txtServeur.Name = "txtServeur";
+            this.txtServeur.Size = new System.Drawing.Size(134, 20);
+            this.txtServeur.TabIndex = 21;
+            this.txtServeur.Text = "genserv";
+            // 
+            // gbInitButton
+            // 
+            this.gbInitButton.Controls.Add(this.BtnCiscoFile);
+            this.gbInitButton.Controls.Add(this.BtnGenesysFile);
+            this.gbInitButton.Location = new System.Drawing.Point(300, 12);
+            this.gbInitButton.Name = "gbInitButton";
+            this.gbInitButton.Size = new System.Drawing.Size(1031, 74);
+            this.gbInitButton.TabIndex = 22;
+            this.gbInitButton.TabStop = false;
+            // 
+            // gbFinalButton
+            // 
+            this.gbFinalButton.Controls.Add(this.BtnCreer);
+            this.gbFinalButton.Controls.Add(this.txtLogin);
+            this.gbFinalButton.Controls.Add(this.txtServeur);
+            this.gbFinalButton.Controls.Add(this.txtPassword);
+            this.gbFinalButton.Controls.Add(this.label3);
+            this.gbFinalButton.Controls.Add(this.label1);
+            this.gbFinalButton.Controls.Add(this.label2);
+            this.gbFinalButton.Controls.Add(this.BtnVerifExiste);
+            this.gbFinalButton.Location = new System.Drawing.Point(300, 12);
+            this.gbFinalButton.Name = "gbFinalButton";
+            this.gbFinalButton.Size = new System.Drawing.Size(1031, 74);
+            this.gbFinalButton.TabIndex = 23;
+            this.gbFinalButton.TabStop = false;
+            this.gbFinalButton.Visible = false;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1392, 840);
-            this.Controls.Add(this.BtnCreer);
-            this.Controls.Add(this.BtnVerifExiste);
+            this.Controls.Add(this.gbFinalButton);
+            this.Controls.Add(this.gbInitButton);
             this.Controls.Add(this.lblVille);
             this.Controls.Add(this.lblCodeUGS);
             this.Controls.Add(this.label6);
@@ -217,15 +267,12 @@
             this.Controls.Add(this.treeObjects);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.rtLog);
-            this.Controls.Add(this.BtnGenesysFile);
-            this.Controls.Add(this.BtnCiscoFile);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.txtGenesysPassword);
-            this.Controls.Add(this.txtGenesysLogin);
             this.Name = "Main";
             this.Text = "Création de Site";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
+            this.gbInitButton.ResumeLayout(false);
+            this.gbFinalButton.ResumeLayout(false);
+            this.gbFinalButton.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -233,8 +280,8 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtGenesysLogin;
-        private System.Windows.Forms.TextBox txtGenesysPassword;
+        private System.Windows.Forms.TextBox txtLogin;
+        private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label6;
@@ -249,6 +296,10 @@
         private System.Windows.Forms.Label lblVille;
         private System.Windows.Forms.Button BtnVerifExiste;
         private System.Windows.Forms.Button BtnCreer;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtServeur;
+        private System.Windows.Forms.GroupBox gbInitButton;
+        private System.Windows.Forms.GroupBox gbFinalButton;
     }
 }
 

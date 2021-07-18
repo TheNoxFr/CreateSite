@@ -33,17 +33,28 @@ namespace CreateSite
             Password = password;
         }
 
-        public void Init()
+        public string Init()
         {
+            string result = "";
+
             Endpoint endpoint = new Endpoint("default", Host, Port);
             confservProtocol = new ConfServerProtocol(endpoint);
             confservProtocol.ClientApplicationType = (int)CfgAppType.CFGSCE;
             confservProtocol.ClientName = "default";
             confservProtocol.UserName = Login;
             confservProtocol.UserPassword = Password;
-            confservProtocol.Open();
+            try
+            {
+                confservProtocol.Open();
+            }
+            catch (Exception e)
+            {
+                result = "Msg : " + e.Message;
+            }
 
             confService = ConfServiceFactory.CreateConfService(confservProtocol);
+
+            return result;
         }
 
         public void Disconnect()

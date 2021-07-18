@@ -70,14 +70,14 @@ namespace CreateSite
 
         }
 
-        private void ParseInifile()
+        private bool ParseInifile()
         {
             OpenFileDialog dialog = new OpenFileDialog();
-
+            dialog.Filter = "Fichiers Config (*.cfg)|*.cfg";
             DialogResult res = dialog.ShowDialog();
 
             if (res != DialogResult.OK)
-                return;
+                return false;
 
 
             string iniFileName = dialog.FileName;
@@ -125,7 +125,7 @@ namespace CreateSite
             if (config == null)
             {
                 // Comment on remonte les erreurs ??
-                return;
+                return false;
             }
 
             foreach (CleValeur clevaleur in config.Options)
@@ -147,17 +147,19 @@ namespace CreateSite
                 }
             }
 
+            return true;
 
         }
 
         private void TraiteFichierCisco()
         {
-            ParseInifile();
+            if (!ParseInifile())
+                return;
+
+            gbInitButton.Hide();
+            gbFinalButton.Show();
 
             CiscoAjout();
-
-            
-
         }
 
         private void TraiteFichierGenesys()
@@ -175,7 +177,11 @@ namespace CreateSite
             }
             */
 
-            ParseInifile();
+            if (!ParseInifile())
+                return;
+
+            gbInitButton.Hide();
+            gbFinalButton.Show();
 
             GenesysAjout();
         }
@@ -443,8 +449,16 @@ namespace CreateSite
 
         private void GenesysVerifExiste()
         {
-            genesys = new Genesys("genserv", 2020, txtGenesysLogin.Text, txtGenesysPassword.Text);
-            genesys.Init();
+            if (genesys == null)
+            {
+                genesys = new Genesys(txtServeur.Text, 2020, txtLogin.Text, txtPassword.Text);
+                string res = genesys.Init();
+                if (!res.Equals(""))
+                {
+                    Trace(Target.Genesys, TraceLevel.ERROR, res);
+                    return;
+                }
+            }
 
             Trace(Target.Genesys, TraceLevel.INFO, "------------------------------");
             Trace(Target.Genesys, TraceLevel.INFO, "Début Vérification.");
@@ -2058,8 +2072,14 @@ namespace CreateSite
 
         private void CiscoVerifExiste()
         {
-            cisco = new Cisco("https://192.168.1.46:8443/axl/", "ccmadministrator", "BcH1Kf0T");
-            cisco.Init();
+            //cisco = new Cisco("https://192.168.1.46:8443/axl/", "ccmadministrator", "BcH1Kf0T");
+            cisco = new Cisco("https://" + txtServeur.Text + ":8443/axl/", txtLogin.Text, txtPassword.Text);
+            string res = cisco.Init();
+            if (!res.Equals(""))
+            {
+                Trace(Target.Cisco, TraceLevel.ERROR, res);
+                return;
+            }
 
             Trace(Target.Cisco, TraceLevel.INFO, "------------------------------");
             Trace(Target.Cisco, TraceLevel.INFO, "Début Vérification.");
